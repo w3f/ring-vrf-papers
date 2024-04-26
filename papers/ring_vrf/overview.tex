@@ -1,3 +1,5 @@
+% !TEX root = crypto.tex
+
 \subsection{Ring VRF Overview}
 \label{sec:overview}
 
@@ -105,11 +107,7 @@ Instead, we replace $ \ring $ with a commitment to the ring such as Merkle tree 
 
 Together with these algorithms, we can replace the membership condition $\pk \in \ring$ in $  \rel_{\mathsf{rvrf}} $ by the opening condition
 $ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the statement with $ \comring $ and add $ \openring $ to the witness.
-
-
-
-
-
+%
 %\eprint{Indeed, regular (non-anonymous) VRF uses always encounter similar tension
 %	with VRF inputs \msg being smaller than full message bodies $(\msg,\aux)$.
 %	As an example, Praos \cite{praos} binds their VRF public key together
@@ -125,7 +123,7 @@ $ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the state
 %	\eprint{\footnote{If ring VRFs authorized creating blocks in an anonymous Praos blockchain then \aux must include the block being created, or else others could steal their block production turn.}}{}
 %	but thankfully our ring VRF construction in \S\ref{sec:pederson_vrf} exposes \aux exactly like EC VRFs should do.%
 %	\eprint{\footnote{We suppress multiple input-output pairs until \S\ref{subsec:multi_io} below, but they work like in \cite{PrivacyPass} too.}}{}}{}
-
+%
 % $\pk = \OpenRing(\comring,\openring)$.
 %
 % $$ \pi_0 = \NIZK \Setst{ \Out, \msg, \comring }{
@@ -136,9 +134,9 @@ $ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the state
 %           \pk &= \OpenRing(\comring,\openring)  \\      
 %     \end{aligned}
 % } $$
-
+%
 % \smallskip
-
+%
 %\eprint{Addressing these concerns, our notion should really be named 
 % \emph{ring verifiable random function with additional data}
 %and its basic methods look like
@@ -146,9 +144,8 @@ $ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the state
 %\item $\rVRF.\rSign : (\sk,\openring,\msg,\aux) \mapsto \sigma$, \quad and
 %\item $\rVRF.\rVerify : (\comring,\msg,\aux,\sigma) \mapsto \Out \,\, \lor \perp$.
 %\end{itemize}}{}
-
-
-\paragraph{Our Approach:} Although an asymptotic improvement with $ \rVRF.\CommitRing $, 
+\\\\
+\noindent \textbf{Our Approach.} Although an asymptotic improvement with $ \rVRF.\CommitRing $, 
 the intuitive scheme can be computationally expensive to prove the evaluation value together with the membership condition. Therefore, in our first ring VRF protocol,  we divide the relation into two relations. The first relation $ \Reval $ is designed  to show the validity of the evaluation value with a proof that can be efficiently generated using discrete logarithm equality proofs. We integrate $ \aux $ in this proof so that the proof serves as a signature of $ \aux $ signed by the same key used to generate the ring VRF output.  The second relation $ \Rring $ is designed to show that the key used in the evaluation and signing $ \aux $ is in the ring. Its statement therefore has one part of the evaluation proof which is the Pedersen commitment to the secret key in order to relate the key in $ \Rring $ and $ \Reval $.
 
 The most computationally expensive part of our first protocol is generating a proof for $ \Rring $ during signing. Therefore, we deploy a further optimization on this and design the second protocol. For this,  we consider optimising the cases where a party generates ring VRF signatures of different inputs for the \emph{same ring}. In this case, actually, the main change in the new signature is caused by the cheapest part of the signing process which generates proof for the ring VRF output and signature for $ \aux $  because the input changes so the evaluation value changes. Consequently, it raises the question of why a party should re-execute the ring membership proving.  In light of this, we deploy in the second protocol our  new notion ZK continuation that allows us to generate proofs for $ \rel_{\mathsf{rvrf}} $ by reusing a previously generated proof for ring membership with simple operations. 

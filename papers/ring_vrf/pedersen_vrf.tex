@@ -1,8 +1,9 @@
+% !TEX root = crypto.tex
 
 \def\tmpaux{\aux \doubleplus \piring \doubleplus \comring}
 \def\tmpeprintaux{\eprint{\aux'}{\tmpaux}}
 \def\tmpindent{\hspace*{5pt}}
-\section{The First Ring VRF Construction}% {Ring VRFs from the Pedersen VRF}
+\section{Our First Ring VRF Construction}% {Ring VRFs from the Pedersen VRF}
 \label{sec:pederson_vrf}
 
 
@@ -268,7 +269,7 @@ We note that if $ \pk = \sk\genG $ then $ \Rring $ does not need $ \sk $ as a pa
 \eprint{We prove in Theorem \ref{thm:firstprotocol} that our first ring VRF construction realizes $ \fgvrf $ in Figure \ref{f:gvrf} but we want to give an intuition first why our scheme is secure. Intuitively, the randomness and the determinism of $ \rVRF.\Eval $ come from the random oracles $ H $ and $ H_{\grE} $.  The anonymity of our ring VRF signature $ (\sigma = (\compk, \pi_{ring}, \PreOut, \pi_{eval}, \comring)) $ comes from the perfect hiding property of Pedersen commitment i.e., $ \compk $ is independent from the signer's key, the zero-knowledge property of $ \NIZK_{\mathcal{R}_{ring}} $ and $ \NIZK_{\mathcal{R}_{eval}} $ and the difficulty of DDH in  $ \grE $ (Lemma \ref{lem:honestoutput}) so that $ \PreOut $ is indistinguishable from a random element in $ \grE $. The unforgeability and uniqueness come from the fact that CDH is hard in $ \grE $ (Lemma \ref{lem:simulation-ind}).}{}
 
 \begin{algorithm}
-	\eprint{}{\scriptsize}
+	\eprint{}{\small}
 	\caption{$\Gen_{sign}(\ring,\sk=(x,r),\pk,\aux,\msg)$}
 	\label{alg:gensign}	 	
 	\begin{algorithmic}[1]

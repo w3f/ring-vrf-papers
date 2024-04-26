@@ -1,3 +1,6 @@
+% !TEX root = crypto.tex
+
+
 \section{Introduction}
 
 We introduce a novel cryptographic primitive called \emph{a ring verifiable random function (ring VRF)}. Ring VRF  operates in a manner akin to both VRF \cite{vrf_micali}  and ring signatures \cite{ring_accountable,ring_efficient,ring_linkable,ring_noRO,ring_sublinear}, leveraging the properties of uniqueness, pseudorandomness, and anonymity. In ring VRF, a user can generate a ring VRF output, which is a \emph{unique} pseudorandom number, with their key and  input  similar to VRF. They also sign the input and any message (e.g., auxiliary data) with a set of public keys  (ring) including their key, similar to the ring signatures. The ring signature assures that the ring VRF output is the unique output of the input generated with one of the public keys and the same key signs also the message. The verification process does not reveal the signer's key except that their key is in the public key set.
@@ -22,8 +25,8 @@ We remark that VRF cannot provide this level of anonymity, as verifying the corr
 We design two efficient ring VRF protocols that can be applied to real-world scenarios.
 In simple terms,  our ring VRF signatures has components dedicated to verifying the output and confirming the key membership. Some scenarios require the generation of multiple ring VRF signatures for different inputs for \emph{the same ring}. In these scenarios, since the ring does not change only the output changes, an optimized approach to generate a new signature given another signature generated for the same ring would be as follows:  generate a new component only for the aspects directly associated with the correctness of the ring VRF output and  rerandomize the relevant component of a prior signature indicating the existence of the signing key in the ring. This optimized solution at the same time should preserve both verifiability and anonymity of the optimized signature.
 To this end, we introduce a  new notion called \emph{zero-knowledge continuations}. It provides a way to efficiently prove a statement with a simple transformation of an existing proof of the same statement. After this transformation the new proof remains unlinkable to the other proofs. 
-
-In short, our contributions in this paper are as follows:
+\\\\
+\noindent \textbf{Our Contributions.} The contributions of this work are as follows:
  \begin{itemize}
  	\item We formally define the security of a ring VRF in the universal composability (UC) model. For this, we construct a functionality $ \fgvrf $ and verify the security properties that $ \fgvrf $ provides.
  	
