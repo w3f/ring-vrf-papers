@@ -1,15 +1,28 @@
 % !TEX root = crypto.tex
 
-
 \section{Introduction}
+
+% Structure of Intro:
+% Verifiable random functions are... (definition)
+% VRFs are being used for... (e.g., blockchains)
+% Highlight that EC-VRF has an RFC (https://datatracker.ietf.org/doc/rfc9381/) and is used in blockchains (Sassafras, Cardano, etc.), and a ring version allows advanced features/functionality, importantly, as a drop-in replacement where EC-VRF is already used.
+% VRFs are currently undergoing standardization through the IRTF.  In particular, EC-VRF recently became an RFC.
+
+% But VRFs do not provide anonymity.  For example, in leader election, the identity of the leader is revealed.
+
+% Reminders:
+% (1) Talk about Sybil paper and how it uses threshold issuance of keys (i.e., a DKG), which introduces overhead.
+% (2) Include figure of EC-VRF RFC construction & Ped "VRF" construction for comparison.
+
+% Notes: It seems that anonymous VRFs suffice for leader election, using ephemeral public keys, whi
+% Emphasize privacy-enhancing technologies if we are submitting to SAC.
+% Why ring VRF instead of ring signatures? Highlight statelessness.
 
 We introduce a novel cryptographic primitive called \emph{a ring verifiable random function (ring VRF)}. Ring VRF  operates in a manner akin to both VRF \cite{vrf_micali}  and ring signatures \cite{ring_accountable,ring_efficient,ring_linkable,ring_noRO,ring_sublinear}, leveraging the properties of uniqueness, pseudorandomness, and anonymity. In ring VRF, a user can generate a ring VRF output, which is a \emph{unique} pseudorandom number, with their key and  input  similar to VRF. They also sign the input and any message (e.g., auxiliary data) with a set of public keys  (ring) including their key, similar to the ring signatures. The ring signature assures that the ring VRF output is the unique output of the input generated with one of the public keys and the same key signs also the message. The verification process does not reveal the signer's key except that their key is in the public key set.
 
-
-
-The distinctive properties of ring VRF such as pseudorandomness, anonymity and uniqueness offer  an efficient alternative for anonymous access control systems. Imagine an identity system where a user registers with their public key. Assuming that the system maintains a fixed input for a given service (e.g., urls) and provides a public commitment of the registered public keys, a registered user  can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms  are  legitimate  all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's  privacy. Moreover, the  system is protected against the Sybil behaviour, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. This protection enables the system to ban certain pseudonyms in cases of abusive behaviours. Thus, the abusive user loses the access since they cannot generate  another legitimate pseudonym for this particular service.
+The distinctive properties of ring VRF such as pseudorandomness, anonymity and uniqueness offer  an efficient alternative for anonymous access control systems. Imagine an identity system where a user registers with their public key. Assuming that the system maintains a fixed input for a given service (e.g., urls) and provides a public commitment of the registered public keys, a registered user  can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms  are  legitimate  all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's  privacy. Moreover, the  system is protected against the Sybil behavior, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. This protection enables the system to ban certain pseudonyms in cases of abusive behaviors. Thus, the abusive user loses the access since they cannot generate  another legitimate pseudonym for this particular service.
 In current anonymous systems, user accountability is primarily addressed through two main approaches: (1) allowing users to authenticate for a fixed duration \cite{limited_authentication1,limited_authentication2,limited_authentication3}, and (2) incorporating mechanisms for privacy revocation administered by a central authority \cite{revocation1,revocation2,revocation3,revocation4}, or through privacy revocation using anonymous committees \cite{anonymous-committee1,anonymous-committee2}.
-In contrast, Ring VRF offers a straightforward, efficient and succinct solution for user accountability when compared to existing methods as it neither imposes limitations on user behaviours nor necessitates the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
+In contrast, Ring VRF offers a straightforward, efficient and succinct solution for user accountability when compared to existing methods as it neither imposes limitations on user behaviors nor necessitates the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
 In addition to facilitate anonymous authentication, ring VRF  serves as a potent tool for the concept of proof-of-personhood (PoP) \cite{pop2008,pop2017,pop2020} to establish a connection between the physical entities and virtual identities by preserving the accountability and anonymity of the entity. 
 %In this context, an individual can physically enrol in a designated system (e.g., an issuer responsible for issuing identity cards) with a ring VRF key. Then, they present their ring VRF outputs as a virtual identity to another system, with the ring VRF signature serving as verifiable evidence of their physical existence. This process maintains their anonymity across different contexts since each ring VRF output of a corresponding system is unlinkable. 
 
