@@ -8,7 +8,9 @@
 % Highlight that EC-VRF has an RFC (https://datatracker.ietf.org/doc/rfc9381/) and is used in blockchains (Sassafras, Cardano, etc.), and a ring version allows advanced features/functionality, importantly, as a drop-in replacement where EC-VRF is already used.
 % VRFs are currently undergoing standardization through the IRTF.  In particular, EC-VRF recently became an RFC.
 
-% But VRFs do not provide anonymity.  For example, in leader election, the identity of the leader is revealed.
+% But VRFs do not provide anonymity.  For example, in leader election, the identity of the leader is revealed.  It would seem that anonymous VRF solves this, but problem with pseudorandomness (pointed out by Unbiasable VRF paper).
+
+% Furthermore, anonymous VRF doesn't work for identity applications.
 
 % Reminders:
 % (1) Talk about Sybil paper and how it uses threshold issuance of keys (i.e., a DKG), which introduces overhead.
@@ -29,8 +31,9 @@ In addition to facilitate anonymous authentication, ring VRF  serves as a potent
 
 Unique ring signature (URS) schemes \cite{URCframework} aim to address similar challenges as ring VRF in the context of anonymous identity applications. Both generate a unique identifier within the ring signature for each input, which corresponds to the ring VRF output in our case. Unlike ring VRF, where a party can sign any message with a ring VRF signature, unique ring signature schemes do not include the capability to sign such messages. Therefore, leveraging these identifiers for practical authentication, such as in a TLS session, is not straightforward. 
 Beyond this, we demand from a ring VRF output  to be a pseudorandom even if the signer's key is maliciously generated. This property distinguishes it from unique ring signatures. 
+\liz{EC Reviewer A: ``The tag of a unique ring signature has to implicitly be pseudorandom for honest keys in order to not break anonymity. Then, since the tag is required to be unique, it will likely be pseudo-random for maliciously generated keys as well."}
 Although this property may not find immediate use in the identity applications we mentioned, it holds critical significance in applications that grant privileges to parties based on specific criteria associated with their ring VRF output, such as leader elections or lotteries. 
-For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. Since ring VRF provides the same pseudorandomness property required in these leader election mechanisms, a ring VRF scheme  can potentially replace VRF in these protocols to provide also anonymity to leaders even after they produce their blocks. 
+For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. Since ring VRF provides the same pseudorandomness property required in these leader election mechanisms, a ring VRF scheme  can potentially replace VRF in these protocols to provide also anonymity to leaders even after they produce their blocks. \liz{EC Reviewer B: ``Why this is the case? I thought future leaders are selected based on the outputs, which are public anyway?"}
 We remark that VRF cannot provide this level of anonymity, as verifying the correctness of the VRF output  of a leader, which is necessary to verify the block of the leader, requires knowledge of the leader's public key.
 
 

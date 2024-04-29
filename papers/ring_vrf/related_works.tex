@@ -2,7 +2,8 @@
 
 \subsection{Related Work}
 
-
+\noindent\textit{Ring Signatures.}
+\\\\
 \noindent\textit{Unique Ring Signatures.} The unique ring signature framework \cite{URCframework} is the closest model to our ring VRF framework particularly in terms of the presence of a deterministic component known as the unique identifier for the signed message. This identifier remains constant for the same signed message even when the ring changes.  Essentially, the unique identifier in the unique ring signature model and the ring VRF evaluation value function equivalently in both models. However, a fundamental distinction lies in the treatment of this identifier. In our ring VRF model, we impose the requirement of pseudorandomness, as defined in \cite{ucvrf,praos}, on this unique identifier, even in the case of malicious parties.
 This requirement is crucial for applications such as lotteries or leader elections where the unique identifier plays a privileged or reward-based role based on predefined conditions. Another definitional difference is that a ring VRF  signature not only prove the correctness of the evaluation value of an input but also signs an auxiliary data independent from the input. This property is needed for anonymous access mechanisms to prevent replay attacks because auxiliary data can be used to effectively bind the ring VRF signature to e.g., a TLS session.
 The signature size of unique ring signature schemes scales either linearly \cite{URCframework,URCfc} or logarithmically  \cite{URCblockchainprivacy,URClattice} with the size of the ring. In contrast, our ring VRF constructions maintain a constant signature size while providing stronger security guarantees. Also our signing and verification algorithms show better asymptotic scalability compared to existing unique ring signatures because they operate with a constant-size  commitment to the ring.
@@ -10,7 +11,7 @@ The signature size of unique ring signature schemes scales either linearly \cite
 \noindent\textit{Linkable and Traceable Ring Signatures.} Other related models are linkable ring signatures \cite{ring_linkable,ring_linkablee} and traceable ring signatures \cite{traceable07,traceable_sub}. Linkable ring signatures allows a third party to link whether two ring signatures of two inputs are signed by the same party in the same ring without revealing the identity. This type of linkability property is valuable in applications that impose restrictions on authentications, such as preventing double spending or multiple voting. Akin to ring VRF and unique ring signatures, if a signer signs the same message twice for the same ring and issuer, it becomes evident that both signatures are produced by the same party, although the specific party's identity remains secret. Both ring VRF and unique ring signature schemes have this property in a single context through the unique identifier for each party.
 Differently than ring VRF, traceable ring signatures  disclose the identity of the signer when the signer generates two signatures for two different inputs within the same ring and from the same issuer.
 \\\\
-\noindent\textit{Verifiable Random Functions.} 
+\noindent\textit{Verifiable Random Functions.} \liz{Talk about Unbiasable VRF paper.}
 \\\\
 \noindent\textit{Schemes Used in Practice.} Another related informal design is Semaphore \cite{Semaphore}, which also provides a ``nullifier," unique per identity and context but anonymous, (akin to a ring VRF output in our formalism) along with a signature on a message. However, the security properties of Semaphore are not fully formalized, and our constructions distinguishes themselves by offering more efficient proving times and the potential for proof reuse. \liz{Cite and talk about Sassafras.}
 \\\\
