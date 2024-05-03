@@ -9,11 +9,12 @@
 %6 based on ECVRF (standard)
 %, and applications to identity
 \liz{WIP.} A verifiable random function (VRF) is a pseudorandom function (PRF) whose output is publicly verifiable.
-That is, for a given input, the output is coupled with a proof of correct evaluation.
+%That is, for a given input, the output is coupled with a proof of correct evaluation.
 Verifiable random functions are a key ingredient in many proof-of-stake blockchains for ensuring fair and verifiable pseudorandom lotteries.
 For example, in Secret Single Leader Election (SSLE), only one leader is selected per slot, and the
 leader is hidden until they announce themselves by providing a proof.
 The main security properties of SSLE are uniqueness (i.e., electing only one leader), unpredictability (i.e., hiding the leader), and fairness (i.e., having equal chance of becoming the leader).
+\liz{Emphasize privacy-enhancing technologies if we are submitting to SAC.}
 %In addition to SSLE, ring VRFs are an attractive option for deployment in decentralized identity (DID) systems.
 %Ring VRF finds applications in a wide range of other cases, including rate limiting and rationing systems.
 
@@ -26,8 +27,9 @@ Ring VRFs combine features of verifiable random functions and ring signatures, n
 %which allows a prover to reprove a statement in a constant time and be unlikable to the previous proof(s). 
 We provide a security definition for ring VRFs in the Universal Composability (UC) framework.
 We then propose an efficient instantiation of a ring VRF and prove that it realizes our functionality.
-In particular, we build a ring variant of EC-VRF, an elliptic-curve-based VRF currently undergoing standardization through the IRTF.
-\liz{Say something about second construction.}
+In particular, we build a ring variant of EC-VRF, an elliptic-curve-based VRF currently undergoing standardization through the IRTF. 
+%and which has been shown to achieve strong notions of security (cite Unbiasable VRF paper)
+\liz{Second construction.}
 In addition to SSLE, our new primitive is an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.
 
 % OLD
