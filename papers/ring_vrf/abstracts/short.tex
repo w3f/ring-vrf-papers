@@ -8,29 +8,32 @@
 %5. UC realize it
 %6 based on ECVRF (standard)
 %, and applications to identity
-\liz{WIP.} A verifiable random function (VRF) is a pseudorandom function (PRF) whose output is publicly verifiable.
+A verifiable random function (VRF) is a pseudorandom function (PRF) whose output is publicly verifiable.
 %That is, for a given input, the output is coupled with a proof of correct evaluation.
 Verifiable random functions are a key ingredient in many proof-of-stake blockchains for ensuring fair and verifiable pseudorandom lotteries.
-For example, in Secret Single Leader Election (SSLE), only one leader is selected per slot, and the
-leader is hidden until they announce themselves by providing a proof.
+For example, in Single Secret Leader Election (SSLE), only one leader is selected per slot, and the
+leader remains anonymous until they announce themselves by providing a proof.
+Anonymity of the leader is an important security feature, as the leader makes for an attractive target and single point of failure.
 The main security properties of SSLE are uniqueness (i.e., electing only one leader), unpredictability (i.e., hiding the leader), and fairness (i.e., having equal chance of becoming the leader).
-\liz{Emphasize privacy-enhancing technologies if we are submitting to SAC.}
 %In addition to SSLE, ring VRFs are an attractive option for deployment in decentralized identity (DID) systems.
 %Ring VRF finds applications in a wide range of other cases, including rate limiting and rationing systems.
 
 ~~~~~~~With the above properties in mind, we introduce a new cryptographic primitive, called a 
 \emph{ring verifiable random function.}
-Ring VRFs combine features of verifiable random functions and ring signatures, namely unique, pseudorandom, verifiable outputs as well as anonymity of the signer within a ring of potential signers.
+Ring VRFs enjoy features of both verifiable random functions and ring signatures, namely unique, pseudorandom, verifiable outputs as well as anonymity of a signer within a ring of potential signers.
+In particular, ring VRFs fulfill the \emph{unique}, \emph{pseudorandom}, \emph{anonymous} selection of a leader.
 %We design its security in the universal composability (UC) framework and construct two protocols secure in our model.
 % Liz: removing this for now since it doesn't appear relevant to Sassafras
-%We also formalize a new notion of \emph{zero-knowledge (ZK) continuations} allowing for the reusability of proofs by randomizing and enhancing the efficiency of one of our ring VRF schemes. We instantiate this notion with our protocol $ \SpecialG $
-%which allows a prover to reprove a statement in a constant time and be unlikable to the previous proof(s). 
-We provide a security definition for ring VRFs in the Universal Composability (UC) framework.
+%We also formalize a new notion of \emph{zero-knowledge (ZK) continuations} allowing for the reusability of proofs by randomizing and enhancing the efficiency of one of our ring VRF schemes. We instantiate this notion with our protocol $ \SpecialG $ which allows a prover to reprove a statement in a constant time and be unlikable to the previous proof(s). 
+We provide a formal security definition for ring VRFs in the Universal Composability (UC) framework.
 We then propose an efficient instantiation of a ring VRF and prove that it realizes our functionality.
-In particular, we build a ring variant of EC-VRF, an elliptic-curve-based VRF currently undergoing standardization through the IRTF. 
+In particular, we build a ring variant of ECVRF, an elliptic-curve-based VRF currently undergoing standardization through the IRTF.
+We further optimize our construction by employing a \emph{zero-knowledge (ZK) continuation}, which enables reproving a statement in a constant time in a manner that is unlikable to previous proofs.
+A ZK continuation allows for the reusability of proofs of ring membership, but is likely of independent interest.
+%which allows a prover to reprove a statement in a constant time and be unlikable to the previous proof(s). 
 %and which has been shown to achieve strong notions of security (cite Unbiasable VRF paper)
-\liz{Second construction.}
-In addition to SSLE, our new primitive is an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.
+In addition to SSLE, ring VRFs are an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, protecting user privacy while preventing Sybil attacks.
+%\liz{Emphasize privacy-enhancing technologies if we are submitting to SAC.} 
 
 % OLD
 %We introduce a new cryptographic primitive,  named

@@ -191,7 +191,7 @@ $$
 %to \cite{HdVBatchEd25519} because $s_2$ makes our signature large enough
 %that half-aggregation makes sense, unlike EC VRF. %NOT CLEAR SENTENCE
 The verifier in $ \PedVRF $ verifies that the secret key computed to generate $ \PreOut $ and the secret key used to generate $ \compk $ are the same. Therefore, $ H(\msg, \PreOut) $ is the correct evaluation value of $ \msg $ with this secret key since $ \PreOut $ is correct. In addition to this, they verify that $ \aux $
-is signed by the same key since $ \pi $ functions akin to a  Schnorr-like signature. We note that $ \PedVRF $ is not a VRF due to the absence of a public key but it can be transformed into EC-VRF \cite{nsec5,VXEd25519,draft-irtf-cfrg-vrf-10} if the conditions $\openpk = r_2 = 0$ in \Sign and $ \pk = \sk G $ are imposed.
+is signed by the same key since $ \pi $ functions akin to a  Schnorr-like signature. We note that $ \PedVRF $ is not a VRF due to the absence of a public key but it can be transformed into ECVRF \cite{nsec5,VXEd25519,draft-irtf-cfrg-vrf-10} if the conditions $\openpk = r_2 = 0$ in \Sign and $ \pk = \sk G $ are imposed.
 %but our public key handling in \PedVRF breaks VRF definitions somewhat. %NOT CLEAR SENTENCE
 
 Now, we are ready to describe our first ring VRF construction.
