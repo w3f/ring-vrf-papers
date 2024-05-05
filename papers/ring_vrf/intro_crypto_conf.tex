@@ -50,7 +50,7 @@ In addition to facilitate anonymous authentication, ring VRF  serves as a potent
 In simple terms,  our ring VRF signatures have components dedicated to verifying the output as well as confirming key membership in the ring. Some scenarios require the generation of multiple ring VRF signatures for different inputs for \emph{the same ring}. In these scenarios, \liz{give examples of scenarios} since the ring does not change only the output changes, an optimized approach to generate a new signature given another signature generated for the same ring would be as follows:  generate a new component only for the aspects directly associated with the correctness of the ring VRF output and  rerandomize the relevant component of a prior signature indicating the existence of the signing key in the ring. This optimized solution at the same time should preserve both verifiability and anonymity of the optimized signature.
 To this end, we introduce a  new notion called  a \emph{zero-knowledge continuation}. ZK continuations provide a way to efficiently prove a statement with a simple transformation of an existing proof of the same statement. After this transformation, the new proof remains unlinkable to the prior proofs. 
 \\\\
-\noindent \textbf{Our Contributions.} \liz{Rework this.} The contributions of this work are as follows:
+\noindent \textbf{Our Contributions.} \liz{Rework this.  Instantiation and efficiency analysis of our constructions in Section~\ref{sec:conclusion}.} The contributions of this work are as follows:
  \begin{itemize}
  	\item We formally define the security of a ring VRF in the universal composability (UC) model. For this, we construct a functionality $ \fgvrf $ and verify the security properties that $ \fgvrf $ provides.
  	

@@ -1,8 +1,10 @@
-\section{$\SpecialG$ as Instantiation of $\ZKCont$}
+% !TEX root = crypto.tex
+
+\section{$\SpecialG$ as an Instantiation of $\ZKCont$}
 \label{appendix_specialg}
 
-Below we describe $ \SpecialG $ in more details. We start by giving a reminder about   
-Quadratic Arithmetic Program (QAP)~\cite{LegoSNARK}, ~\cite{GGPR13} and related $\relRQ$ in a standard way. 
+Here we describe $ \SpecialG $ in more detail. We begin by recalling the definition of a    
+Quadratic Arithmetic Program (QAP)~\cite{LegoSNARK,GGPR13} and related $\relRQ$ in a standard way. 
 
 \begin{definition}[QAP] 
 \label{def:QAP}
@@ -16,16 +18,16 @@ where $\barv = (v_0, \ldots, v_m) = (1, x_1, \ldots, x_n, w_1, \ldots w_{m-n})$ 
 $\barx = (x_{l+1}, \ldots, x_n)$ and $\baromega = (w_1, \ldots, w_{m-n})$. 
 \end{definition}
 
-\noindent Given notation provided in section~\ref{sec:background}, in particular elliptic curve $\ecE$, its pairing $e$ and 
-the related source, target groups and generators, we introduce%Let $\mathbb{F}_q$ be a prime field, 
+%\noindent Given the notation provided in Section~\ref{sec:background}, in particular, elliptic curve $\ecE$, its pairing $e$ and 
+%the related source, target groups and generators, we introduce%Let $\mathbb{F}_q$ be a prime field, 
 %let $G_1$, $G_2$, $G_T$ be as defined in section~\ref{??}, let $e$, $g$, $h$ be defined as $\ldots$. Let $t(X)$ and
 %$\{u_i(X),v_i(X),w_i(X)\}_{i=0}^m$ be polynomials in $\F_q[X]$, let $\ldots$ be $\ldots$ such that there exists $h(X) \in \F_q[X]$ with
 % $$ \sum_{i=0}^m a_iu_i(X) \cdot  \sum_{i=0}^m a_iv_i(X)  = \sum_{i=0}^m a_iw_i(X) + h(X)t(X)  \ (\ast)$$
 %Then let $\relone = \{ (;) \ | \ (;)  (\ast) \}$
 
-\begin{definition}[Specialised Groth16 ($\SpecialG$)]
-\label{insta:sg16} Let $\relRQ$ be as mentioned above. We call 
-specialised Groth16 for relation $\relRQ$ the following: instantiation of the zero-knowledge continuation notion from Definition~\ref{def:zk_cont}:
+\begin{definition}[Specialized Groth16 ($\SpecialG$)]
+\label{insta:sg16} Let $\relRQ$ be as above. We call 
+specialized Groth16 for relation $\relRQ$ the following instantiation of the zero-knowledge continuation notion from Definition~\ref{def:zk_cont}:
 \begin{itemize}
 \item $\SpecialG.\Setup: (1^{\lambda}, \relRQ) \mapsto (\crs, \tw,\pp)$. \\ 
 \noindent Let $\alpha, \beta, \gamma, \delta, \tau, \eta  \xleftarrow{\$} \F_q^{*}$. 

@@ -1,12 +1,13 @@
+% !TEX root = main.tex
 
-\section{\nizkR's Security}
+\section{The Security of \nizkR}
 \label{ap:nizkR}
 \begin{theorem}
 	If $\ZKCont_{\relone}$ is a zk continuation for $\relone$ and $\nizktwo$ is a NIZK for $\reltwo'$ for some appropriately chosen public parameters $\pp$, 
 	then the $\nizkR$ construction described above is a NIZK for $\rel$.
 \end{theorem}
-\begin{proof} Putting together the results of Lemma~\ref{le:KS_for_nizkR}, Lemma~\ref{le:specialCompl_for_nizkR}, 
-	Lemma~\ref{le:specialZK_for_nizkR} and  we obtain the above statement.
+\begin{proof} Putting together the results of Lemma~\ref{le:KS_for_nizkR}, Lemma~\ref{le:specialCompl_for_nizkR}, and
+	Lemma~\ref{le:specialZK_for_nizkR}, we obtain the above statement.
 \end{proof} 
 \begin{lemma}[Knowledge-soundness for $\nizkR$] 
 	\label{le:KS_for_nizkR}
@@ -54,7 +55,7 @@ $(\barz, \barx; \baromega_2) \in \reltwo$ it holds
 	%  $\pi_2 \leftarrow \nizktwo.\Prove(\crstwo, X, \barz, \barx, b, \baromega_2)) \ \Rightarrow \  \nizktwo.\Verify(\crstwo, X, \barz, \pi_2) =1$
 \end{proof}
 
-\noindent Finally, we define \\
+\noindent Finally, we define the notion of perfect zero-knowledge after reproving. \\
 \begin{comment} 
 	\noindent \textbf{Perfect Zero-knowledge after Reproving a $\ZKCont_{\relone}$ Proof} For all $\lambda \in \Prhbb{N}$, 
 	for every benign auxiliary input $aux$, 

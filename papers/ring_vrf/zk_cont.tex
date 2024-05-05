@@ -1,3 +1,4 @@
+% !TEX root = crypto.tex
 
 %\newcommand{\handan}[2]{{\sout{#1}}\textcolor{blue}{#2}}
 %\newcommand{\handan}[2]{{#1}{}}
@@ -8,17 +9,17 @@
 
 \section{Zero-knowledge Continuations}
 \label{sec:rvrf_cont}
-In this section, we describe our new notion that we call zero-knowledge (ZK) continuation. Our new notion focuses on optimizing a NIZK proving system tailored for a relation $ \rel $ such that
+In this section, we describe our new notion that we call a zero-knowledge (ZK) continuation. Our new notion focuses on optimizing a NIZK proving system tailored for a relation $ \rel $ such that
 $$\rel = \{(\bary, \barz; \barx, \baromega_1, \baromega_2):  (\bary, \barx; \baromega_1) \in \relone, (\barz, \barx; \baromega_2) \in \reltwo \},$$
 and $\relone$, $\reltwo$ are NP relations. 
 At a high level, NIZK proving systems for relations as $ \rel$ are based on the commit-and-prove methodology~\cite{Kilian1990UsesOR,CLOS02,LegoSNARK} 
 as relations $\relone$ and $\reltwo$ have input $\barx$ in common. These systems typically incorporate a commitment $X$ to $\barx$ in their respective 
 proofs or arguments for $ \relone $ and $ \reltwo $ to hide the witness $ x $ in $ \rel $. In our proposed NIZK  for $ \rel $, we adopt a similar methodology but with a distinctive addition. Our design is specified to facilitate the efficient re-proving membership for relation $\relone$ via ZK continuation. 
 In practice, using a NIZK that ensures a ZK continuation for a 
-subcomponent relation (i.e., in our case $\relone$) means one essentially needs to create only once an  expensive proof for that subcomponent 
-relation; the initial proof can later be re-used multiple times (just after inexpensive operations), 
+subcomponent relation (i.e., in our case $\relone$) means one essentially needs to create  an  expensive proof for that subcomponent 
+relation only once; the initial proof can later be re-used multiple times (just after inexpensive operations), 
 while preserving knowledge soundness and zero-knowledge of the entire NIZK. Thus, our re-used proofs stay unlinkable. 
-Below, we formally define ZK continuation. In Section~\ref{sec:rvrf_groth16}, we instantiate it via  \SpecialG, and finally, in section~\ref{subsec:rvrf_faster} we use it to instantiate our $ \rVRF.\Sign $ algorithm from Section \ref{sec:pederson_vrf}\eprint{ with fast amortised prover time}{}. \\
+Below, we formally define ZK continuation. In Section~\ref{sec:rvrf_groth16}, we instantiate it via  \SpecialG, and finally, in Section~\ref{subsec:rvrf_faster}, we use it to instantiate our $ \rVRF.\Sign $ algorithm from Section \ref{sec:pedersen_vrf}\eprint{ with fast amortised prover time}{}. \\
 
 %\noindent In addition, the anonymity property of our ring VRF demands we not only finalise multiple times a component of the zero-knowledge 
 %continuation but also each time the result remains unlinkable to previous finalisations, meaning our ring VRF stays zero-knowledge 
@@ -57,8 +58,8 @@ Below, we formally define ZK continuation. In Section~\ref{sec:rvrf_groth16}, we
 A ZK continuation for a relation $\relone$ with a vector of 
 inputs $(\bary, \barx)$ and witnesses $\baromega_1$ is a tuple of PPT algorithms 
 $(\ZKCont_{\relone}.\Setup, \ZKCont_{\relone}.\Preprove, \ZKCont_{\relone}.\Reprove, 
-\ZKCont_{\relone}.\VerifyCom, \ZKCont_{\relone}.\Verify $, $\ZKCont_{\relone}.\Sim)$
-with  implicit inputs $ \rel_1  $ and security parameter $\lambda$,
+\ZKCont_{\relone}.\VerifyCom, \allowbreak \ZKCont_{\relone}.\Verify $, $\ZKCont_{\relone}.\Sim)$
+with  implicit inputs $ \rel_1  $ and security parameter $\lambda$:
 \begin{itemize}
 
 \item $\ZKCont_{\relone}.\Setup(1^{\lambda}) \rightarrow (\crs, \tw, \pp):$ It outputs a common reference 
@@ -79,9 +80,9 @@ outputs 1 if indeed that is the case and 0 otherwise.
 
 \end{itemize}
 $ \ZKCont_{\relone} $ satisfies perfect completeness, knowledge soundness and zero-knowledge as defined below.
-We define perfect completeness for $\Preprove$ and $\Reprove$  separately  in the most general way possible,
+We define perfect completeness for $\Preprove$ and $\Reprove$  separately  in the most general way possible
 (i.e., with inputs supplied by the adversary where possible).  
-
+\\\\
 \noindent \textbf{Perfect Completeness for $\Preprove$:} For all $\lambda $, for every $(\bary, \barx; \baromega_1) \in \relone$:
 \begin{footnotesize}
 \begin{align*}\
@@ -101,7 +102,7 @@ We define perfect completeness for $\Preprove$ and $\Reprove$  separately  in th
 \end{align*}
 \end{footnotesize}
 
-\noindent \textbf{Knowledge Soundness} For all $\lambda$, for every benign auxiliary input $\realaux$ (as per~\cite{bening_auxiliary}) and 
+\noindent \textbf{Knowledge Soundness:} For all $\lambda$, for every benign auxiliary input $\realaux$ (as per~\cite{bening_auxiliary}) and 
 every non-uniform efficient adversary $\adv$, there exists an efficient non-uniform extractor  $ \Extract $ such that:
 \begin{footnotesize}
 \begin{align*}
@@ -113,9 +114,10 @@ every non-uniform efficient adversary $\adv$, there exists an efficient non-unif
 \noindent where by $(\mathit{output_{A}};\mathit{output_{B}}) \leftarrow A || B(\mathit{input})$ we denote algorithms $A$, $B$ running on the same 
 $\mathit{input}$ and $B$ having access to the random coins of $A$. \\
 
- Finally, we introduce a new flavour of zero-knowledge property for $ \ZKCont_{\relone} $. It allows us to formalize the concept that after an initial call to $\ZKCont_{\relone}.\Preprove$ with $((\bary, \barx), \baromega_1) \in \relone$, subsequent sequential calls to $ \ZKCont_{\relone}.\Reprove $ result in proofs that disclose no information about $\barx$ or $\baromega_1$.
-Hence, the proofs obtained via sequential use of $ \ZKCont_{\relone}.\Reprove $ as described above are not linkable, i.e., a property targeted  in the preamble of this section. 
-
+ \emph{Finally, we introduce a new flavor of zero-knowledge property for $ \ZKCont_{\relone} $. It allows us to formalize the concept that after an initial call to $\ZKCont_{\relone}.\Preprove$ with $((\bary, \barx), \baromega_1) \in \relone$, subsequent sequential calls to $ \ZKCont_{\relone}.\Reprove $ result in proofs that disclose no information about $\barx$ or $\baromega_1$.
+Hence, the proofs obtained via sequential use of $ \ZKCont_{\relone}.\Reprove $ as described above are not linkable, i.e., a property targeted  in the preamble of this section. }
+\liz{Where?}
+\\\\
 \noindent \textbf{Perfect Zero-knowledge w.r.t. $\relone$:} For all $\lambda$, for every benign auxiliary input $\realaux$, 
 for all  $(\bary, \barx; \baromega_1) \in \relone$, for all $X'$, for all $\pi'$, for all $b'$, for every adversary $\adv$, there exists a PPT algorithm $ \Sim $ such that:
 \begin{footnotesize}
@@ -133,11 +135,11 @@ for all  $(\bary, \barx; \baromega_1) \in \relone$, for all $X'$, for all $\pi'$
 
 
 
-\subsection{Specialised Groth16 Proofs}
+\subsection{Specialized Groth16 Proofs}
 \label{sec:rvrf_groth16}
 
-Below we instantiate our ZK continuation notion with a scheme that we call  \emph{$\mathsf{SpecialG}$}. It is based on Groth16 zkSNARK~\cite{Groth16}.
-As in~\cite{Groth16}, we use a standard quadratic arithmetic program $ \cQ $ (QAP) of size $ m $ defined over field $ \F_q $ (See Appendix~\ref{appendix_specialg} for more details). Then given $ \cQ $, we then set  $ \relRQ  $ that corresponds to $ \relone $. $ \relRQ $  consists of pairs $((\bary, \barx); \baromega) \in \F_q^{l} \times \F_q^{n-l} \times \F_q^{m-n}$ where $\F_q$ is a field.  
+In this section, we instantiate our ZK continuation notion with a scheme that we call  \emph{$\mathsf{SpecialG}$}. It is based on the Groth16 zkSNARK~\cite{Groth16}.
+As in~\cite{Groth16}, we use a standard quadratic arithmetic program $ \cQ $ (QAP) of size $ m $ defined over field $ \F_q $. (See Appendix~\ref{appendix_specialg} for more details.) Then given $ \cQ $, we set  $ \relRQ  $ that corresponds to $ \relone $. $ \relRQ $  consists of pairs $((\bary, \barx); \baromega) \in \F_q^{l} \times \F_q^{n-l} \times \F_q^{m-n}$ where $\F_q$ is a field.  
 
 %\eprint{\begin{definition}[QAP] 
 %\label{def:QAP}
@@ -170,7 +172,7 @@ As in~\cite{Groth16}, we use a standard quadratic arithmetic program $ \cQ $ (QA
 %that even after iteratively applying $\SpecialG.\Reprove$ zero-knowledge property is preserved for both the witness 
 %as well as the public input committed to in $X$.  
 
-\noindent We let $\ecE$ be a pairing friendly elliptic curve with an efficient and 
+\noindent We let $\ecE$ be a pairing-friendly elliptic curve with an efficient and 
 non-degenerate pairing $e$. We denote its first  and second source groups by $ \grone,\grtwo $ with generators 
 $\gone$ and $\gtwo$, respectively.
 %Let $\mathbb{F}_q$ be a prime field, 
@@ -182,8 +184,11 @@ Given a vector $ \vec{x} $ of field elements  and a group element $ G \in \grone
 $ \SpecialG $ for relation $\relRQ$ works as follows: %instantiation of the zero-knowledge continuation notion from Definition~\ref{def:zk_cont}:
 \begin{itemize}
 \item $\SpecialG.\Setup(1^{\lambda}, \relRQ) \rightarrow (\crs, \tw,\pp)$:  It is identical to the LegoSNARK  $\ccgroth$~\cite[Fig.~22]{LegoSNARK} setup which  is  an extension of original Groth16~\cite{Groth16} setup by two additional group elements in $ crs $ and one field element in $ \tw$ which are underlined next. $\tw $ consists of $ \alpha, \beta, \gamma, \delta, \tau, \underline{\eta} \leftsample \F_q^*$ and $\crs = (\barsig_1, \barsig_2)$ where 
-$ \barsig_1 = (\alpha  , \beta  , \delta  , \{\tau_i  \}_{i=0}^{d-1}, \{\gamma_i\}_{i=1}^n, \underline{\frac{\eta}{\gamma}}, \{\delta_i\}_{i=n+1}^m, \{\frac{1}{\delta}\tau^it(\sigma) \}_{i=0}^{d-2}, \underline{\frac{\eta}{\delta}})\cdot \gone,
-\barsig_2 = (\beta  , \gamma  , \delta  , \{\tau^i  \}_{i=0}^{d-1})\cdot \gtwo $. Here, $ \gamma_i = \frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\gamma} $ and $ \delta_i =\frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\delta} \}_{i=n+1}^m  $.
+\begin{align*}
+\barsig_1 &= (\alpha  , \beta  , \delta  , \{\tau_i  \}_{i=0}^{d-1}, \{\gamma_i\}_{i=1}^n, \underline{\frac{\eta}{\gamma}}, \{\delta_i\}_{i=n+1}^m, \{\frac{1}{\delta}\tau^it(\sigma) \}_{i=0}^{d-2}, \underline{\frac{\eta}{\delta}})\cdot \gone \\
+\barsig_2 &= (\beta  , \gamma  , \delta  , \{\tau^i  \}_{i=0}^{d-1})\cdot \gtwo
+\end{align*}
+Here, $ \gamma_i = \frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\gamma} $ and $ \delta_i =\frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\delta} \}_{i=n+1}^m  $.
 %\item $\SpecialG.\Gen: (\crs, \relRQ) \mapsto (\pp, \crspk, \crsvk)$ where \\
 %$\crspk = \left([\barsig_1]_1, [\beta]_2, [\delta]_2, \left\{[\tau^i]_2\right\}_{i=0}^{d-1}\right)$  \\ 
 %$\crsvk = \left([\alpha]_1, \left\{ \left[ \frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\gamma} \right]_1 \right\}_{i=1}^{l}, 
@@ -192,7 +197,7 @@ We let $\pp = (\{K_i\}_{\ell+1}^n,K_\gamma) = (\{\gamma_i\gone\}_{i=l+1}^{n},   
 
 A Groth16 proof for $ \relRQ $ needs the public statement $ (\bary,\barx)$ for verification. Differently than this, we want to achieve the verification of a Groth16 proof without $ \barx $ but with the commitment to $ \barx $. Therefore, we need additional elements in $ \crs $ to be able to still execute the verification.
 %{We should say what is the difference from Groth16.Setup or it is the same. I think in general in $ \SpecialG $, you should tell which part is from Groth16 or Legosnark and where we %change it while describing the algorithms. It will be much clear for the reader to verify. You have notes in the end but I think it is better to have it while describing since you can tell %more right away from the algorithm than in the end of everything}
-\item $\SpecialG.\Preprove(\crs, \bar{y}, \bar{x}, \baromega_1) \leftarrow (X', \pi', b')$: It runs the proving algorithm of Groth16 SNARK outputting $ \pi' = (A, B, C)  \in (\grone, \grtwo, \grone)$, then it lets $ b' = 0 $, computes the deterministic commitment $ X' = \sum_{i = \ell +1}^n x_i K_i$ to  $ \barx $.
+\item $\SpecialG.\Preprove(\crs, \bar{y}, \bar{x}, \baromega_1) \leftarrow (X', \pi', b')$: It runs the proving algorithm of the Groth16 SNARK outputting $ \pi' = (A, B, C)  \in (\grone, \grtwo, \grone)$. Then it lets $ b' = 0 $ and computes the deterministic commitment $ X' = \sum_{i = \ell +1}^n x_i K_i$ to  $ \barx $.
 \eprint{In more detail, 
 \begin{align*}
 &\ \ \ \ \ \ \ \   b' = 0; r, s\xleftarrow{\$} \F_p; X' = \sum_{i=l+1}^{n} v_i \cdot  \frac{\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau)}{\gamma} \cdot \gone;  \\
@@ -202,7 +207,7 @@ A Groth16 proof for $ \relRQ $ needs the public statement $ (\bary,\barx)$ for v
 \end{align*}}{}
 \eprint{\noindent where $\barv = (1, x_1, \ldots, x_n, w_1, \ldots, w_{m-n})$, $\bary = (x_1, \ldots, x_l)$, $\barx = (x_{l+1}, \ldots, x_n)$, 
 $\baromega = (w_1, \ldots, w_{m-n})$ (same as per definition of QAP).}{}
-\item$\SpecialG.\Reprove(\crs, X', \pi', b') \leftarrow (X, \pi, b):$ It rerandomizes $ \pi $ and the commitment $ X $  by using $ b' $ i.e., given $ \pi' = (A',B',C') $, pick $ b , r_1, r_2  \xleftarrow{\$} \F_p $ and let $ X = X' + (b- b') \Kgamma, \pi = (A, B, C)  $ where $ A = \frac{A'}{r_1}, B = r_1 B' + r_1r_2 \delta \gtwo, C = C' + r_2A'  - (b - b') \Kdelta $.
+\item$\SpecialG.\Reprove(\crs, X', \pi', b') \leftarrow (X, \pi, b):$ It rerandomizes $ \pi $ and the commitment $ X $  by using $ b' $, i.e., given $ \pi' = (A',B',C') $, pick $ b , r_1, r_2  \xleftarrow{\$} \F_p $ and let $ X = X' + (b- b') \Kgamma, \pi = (A, B, C)  $ where $ A = \frac{A'}{r_1}, B = r_1 B' + r_1r_2 \delta \gtwo, C = C' + r_2A'  - (b - b') \Kdelta $.
 
 
 The $ \Preprove $ and $ \Reprove $ procedures of $ \SpecialG $ are identical to the proving procedure in $ \ccgroth $. In $ \SpecialG $, we split these procedures because we aim to run $ \Preprove $ once which contains heavier operations and then we can efficiently run $ \Reprove $ multiple times  with lighter operations.   
@@ -262,12 +267,12 @@ new and stronger notion so we prove that directly. Formally, we have:
 \begin{theorem}
 \label{sec_specialg}
 Let $\relRQ$ be a relation as related to a QAP such that additionally $\{a_k(X)\}_{k=0}^n$ are linearly independent polynomials. Then, in the 
-AGM~\cite{Fuchs_AGM}, $\SpecialG$ is a zero-knowledge continuation as per Definition~\ref{def:zk_cont}. 
+algebraic group model (AGM)~\cite{Fuchs_AGM}, $\SpecialG$ is a zero-knowledge continuation as per Definition~\ref{def:zk_cont}. 
 \end{theorem}
 \begin{proof} It is straightforward to show that $\SpecialG$ has perfect completeness for $\Preprove$ thanks to the completeness of the Groth16 zkSNARK because $ \SpecialG.\Verify $ is the same as the verification algorithm of the Groth16 zkSNARK when $ X $ is the output of $ \Preprove $.
 For the perfect completeness for $\Reprove$, we have $ X', \pi' = (A',B',C') $ and $ b' $ given by the adversary and $ X,\pi =(A,B,C),b $ generated by $ \Reprove(crs, X',\pi',b') $. Clearly, if $ \SpecialG.\VerifyCom(pp,X',\barx,b') $ verifies, $ \SpecialG.\VerifyCom(pp,X,\barx,b) $ verifies. The verification of  $ X, \pi $ given that $ X',\pi' $ is verified becomes straightforward when we replace $ X $ with $ X' + (b-b')\Kgamma $, $ A $ with $ \frac{A'}{r_1} $, $ B $ with $ r_1 B' + r_1r_2 \delta \gtwo$ $C$ with $ = C' + r_2A'  - (b - b') \Kdelta $. After the replacement, the equality check reduced to $ e (A',B') = e(\alpha\gone,\beta\gtwo) + e(X'+Y, \gamma \gtwo) + e(C', \delta\gtwo)$ which is the verification check for $ X', \pi' $. So, if the adversarial proof verifies then the proof generated by $ \Reprove $ verifies as desired from the perfect completeness property of $ \Reprove $.
 
-We next prove knowledge-soundness (KS) an in Definition~\ref{def:zk_cont} by first arguing $\SpecialG$ is a cc-SNARK with double binding 
+We next prove knowledge-soundness (KS) as in Definition~\ref{def:zk_cont} by first arguing $\SpecialG$ is a cc-SNARK with double binding 
 (see Definition 3.4~\cite{LegoSNARK}).  We use the fact that $\ccgroth$ as defined by the NILP detailed in Fig.22, Appendix H.5~\cite{LegoSNARK} 
 satisfies that latter definition. Moreover, $\SpecialG$'s $\Setup$ on one hand, and $\ccgroth$'s $ \mathsf{KeyGen} $, on the other hand, are the same 
 procedure. Also $\SpecialG$ and $\ccgroth$ share the same verification algorithm. Hence, translating the notation appropriately, $\SpecialG$ also 
@@ -286,7 +291,7 @@ define adversary $\adv_{\ccgroth}$ for KS in Definition 3.4~\cite{LegoSNARK}:
 &\ \ \ \ \ \ \ \ \mathit{then}\ \adv_{\ccgroth} (\crs, \realaux, \relRQ)\ \mathit{outputs} \ (\bary, X, \pi). 
 \end{align*}}{If $ \ \adv_{\SpecialG} (\crs, \pp, \realaux, \relRQ) $ outputs   $ (\bary, \barx, X, \pi, b) $,then  $ \adv_{\ccgroth} (\crs, \realaux, \relRQ) $ outputs $ (\bary, X, \pi) $.}
 Given extractor $\Extract_{\ccgroth}$ fulfilling Definition 3.4~\cite{LegoSNARK} for $\adv_{\ccgroth}$, we
-construct extractor $\Extract_{\SpecialG}$ for $\adv_{\SpecialG}$
+construct extractor $\Extract_{\SpecialG}$ for $\adv_{\SpecialG}$.
 \eprint{\begin{align*}
 &\mathit{If} \Extract_{\ccgroth} (\crs, \realaux, \relRQ)\ \mathit{outputs} \ (\barx^*, b^*, \baromega^*) \\
 & \ \ \ \ \ \ \ \ \mathit{then} \ \Extract_{\SpecialG} (\crs, \realaux, \relRQ) \ \mathit{outputs} \ \baromega^*; \\
@@ -294,13 +299,14 @@ construct extractor $\Extract_{\SpecialG}$ for $\adv_{\SpecialG}$
 \end{align*}}{If $ \Extract_{\ccgroth} (\crs, \realaux, \relRQ) $ outputs  $ (\barx^*, b^*, \baromega^*) $ 
 then $ \Extract_{\SpecialG} (\crs, \realaux, \relRQ) $ outputs  $ \baromega^* $; otherwise $ \Extract_{\ccgroth}(\crs, \realaux, \relRQ) $ outputs $ \bot $.}
 
-\noindent We show $\Extract_{\SpecialG}$ fulfils Definition~\ref{def:zk_cont} for $\adv_{\SpecialG}$. Assume by contradiction that is not the case. 
+\noindent We show $\Extract_{\SpecialG}$ fulfils Definition~\ref{def:zk_cont} for $\adv_{\SpecialG}$. Assume by contradiction that this does not hold.
 This implies there exists an auxiliary input $\realaux$ such that each: 
 \eprint{\begin{align*}
 &\SpecialG.\Verify(\crs, \bary, X, \pi, \relRQ) =1 \ \ (10), \ \SpecialG.\VerifyCom(\pp, X, \barx, b) =1 \ \ (20), \ (\bary, \barx; \baromega) \notin \relRQ  \ \ (30) 
 \end{align*}}{
 $ \SpecialG.\Verify(\crs, \bary, X, \pi, \relRQ) =1 \ \ (10), \SpecialG.\VerifyCom(\pp, X, \barx, b) =1 \ \ (20),  (\bary, \barx; \baromega) \notin \relRQ  \ \ (30)  $
 }
+\liz{Where are equations (10), (20), etc.?}
 holds with non-negligible probability. Since $(20)$ holds with non-negligible probability and verification (for both proofs and commitments actually) is identical in $\SpecialG$ and $\ccgroth$ respectively, 
 and since $\Extract_{\ccgroth}$ is an extractor for $\adv_{\ccgroth}$ as per Definition 3.4~\cite{LegoSNARK},
  then each of the two events 
@@ -308,7 +314,7 @@ $\mathit{\ccgroth.\mathit{VerCommit}^*}(\mathit{ck}, X, \barx^*, b^*) =1 \ (40),
 $
  holds with overwhelming probability. Since $(20)$ holds with non-negligible probability and $(40)$ holds with overwhelming probability and 
 together with (ii) from Definition 3.4~\cite{LegoSNARK} we obtain that $\barx^* = \barx$. Since $(50)$ holds with overwhelming probability, it implies 
-$(\bary, \barx; \baromega^*) \in \relRQ $ with overwhelming probability which contradicts our assumption, so our claim that $\SpecialG$ does not have 
+$(\bary, \barx; \baromega^*) \in \relRQ $ with overwhelming probability, which contradicts our assumption.  Thus, our claim that $\SpecialG$ does not have 
 KS as per Definition~\ref{def:zk_cont} is false. 
 
 Finally, regarding zero-knowledge, it is clear that if $\pi = (A, B, C)$ is part of the output of $\SpecialG.\Reprove$, 
