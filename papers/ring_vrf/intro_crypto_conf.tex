@@ -16,42 +16,37 @@
 A verifiable random function (VRF) \cite{vrf_micali} is a pseudorandom function (PRF) whose output is publicly verifiable.
 That is, only the user holding the secret key can perform evaluations, but any anyone can
 verify an output, given the public verification key and a proof of correctness.
-VRFs have received widespread adoption in practice, including in e-lotteries \cite{MicaliR02,LiangBM20} and secure DNS \cite{GoldbergNPRVZ15,PapadopoulosWHNVRG17}, and have attracted significant interest in recent years due to their use in Proof-of-Stake (PoS) blockchains for secret leader election \cite{ChenM19,KiayiasRDO17,DavidGKR17,BurdgesASV23a}.
-In particular, the RSA Full Domain Hash VRF and the Elliptic Curve VRF (ECVRF) are the subject of standardization efforts through the IETF, including a recent RFC \cite{VRF-RFC}.
+VRFs have received widespread adoption in practice, including in e-lotteries \cite{MicaliR02,LiangBM20} and secure DNS \cite{GoldbergNPRVZ15,PapadopoulosWHNVRG17}, and have attracted significant interest in recent years due to their use in proof-of-stake (PoS) blockchains for secret leader election \cite{ChenM19,KiayiasRDO17,DavidGKR17,BurdgesASV23a}.
+In particular, the RSA Full Domain Hash VRF (RSA-FDH-VRF) and the Elliptic Curve VRF (ECVRF) are the subject of standardization efforts through the IETF, including a recent RFC \cite{VRF-RFC}.
 \\\\
-\noindent \emph{Leader Election.} \liz{Briefly mention why PoW doesn't require this.} 
+\noindent \emph{Leader Election.} 
 A single leader election (SLE) is a way to elect one leader randomly among the
 parties in a distributed system. If the leader is secret (i.e., unpredictable), then it is called
 a secret single leader election (SSLE).
-A single leader, however, represents
-a single point of failure and makes for an attractive target. Indeed, the leader may be malicious, or honest leaders may be targeted, e.g.,
+A single leader makes for an attractive target in real-world systems. Indeed, the leader may be malicious, or honest leaders may be targeted, e.g.,
 by denial-of-service (DoS) attacks. One solution to this is to frequently change the leader and
 to have a secret leader election protocol which hides the leader until they announce themself.
 A leader election mechanism is essential for blockchain protocols if the leader is
-the node who is eligible to publish a block with respect to the rules of the blockchain. 
+the node who is eligible to publish a block.
 One election mechanism for blockchain protocols is proof-of-work, where a node, called a miner, is elected as a leader if it generates a block whose hash is less than a threshold. Some
-proof-of-stake (PoS) protocols [17,28,18,22] use a similar approach with respect to stake instead of computational power. Even though this election mechanism provides secrecy of
+proof-of-stake (PoS) protocols \liz{cite[17,28,18,22]}use a similar approach with respect to stake instead of computational power. Even though this election mechanism provides secrecy of
 the leader(s) and requires no communication with the other nodes, it has some drawbacks. The
 main problem is that the outcome is probabilistic since the leaders are selected in expectation
 with respect to their computational power or stake. Therefore, there can be multiple leaders or
 no leaders at all. If the election outcome has more than one leader, then the efforts of the leaders
 except one will be wasted because they are not aware of other leaders. If the election outcome has
-no leader, then the time to extend the blockchain will be wasted. Besides the wasting problem,
-it has been shown by Azouvi and Cappelletti [1] that PoS protocols with secret single leader
-election (SSLE) provide higher security compared to probabilistic secret leader election.
+no leader, then the time to extend the blockchain will be wasted. Moreover,
+it has been shown by Azouvi and Cappelletti \liz{cite [1]} that PoS protocols with secret single leader
+election (SSLE) provide higher security compared to probabilistic secret leader election (PLE).
 Therefore, it is preferable to have an election mechanism that selects only one leader to generate a
 block.
-ECVRF, in particular, is a core primitive in the leader election mechanisms of proof-of-stake (PoS) blockchains, such as Algorand, \cite{ChenM19}, Cardano \cite{KiayiasRDO17,DavidGKR17}, and Polkadot \cite{BurdgesASV23a}.
+An SSLE scheme is said to be secure \cite{BonehEHG20} if it satisfies uniqueness (i.e., electing only one leader), unpredictability (i.e., hiding the leader), and fairness (i.e., having equal chance of becoming the leader).
+\liz{Possibly say more on this, i.e., not leaking wealth.}
+
+ECVRF is a core primitive in the leader election mechanisms of proof-of-stake blockchains, such as Algorand \cite{ChenM19} and Cardano \cite{KiayiasRDO17,DavidGKR17}, which employ PLE, and Polkadot \cite{BurdgesASV23a}, which employs SSLE.
 RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs the could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
-
+%
 %For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. 
-
-A ring VRF provides the same pseudorandomness property required in these leader election mechanisms and can replace a VRF in these protocols to provide anonymity to leaders even after they produce their blocks.
-A VRF alone cannot provide this level of anonymity, as verifying the correctness of the VRF output  of a leader, which is necessary to verify the block of the leader, requires knowledge of the leader's public key.
-A ring VRF provides private verifiable
-randomness, the VRF output, associated with nodes’ keys. The node can provide proof of
-this VRF output without having to reveal its identity -- only that their key is contained within a ring of keys.
-They can later provide proof that it was their randomness specifically.
 %
 %These protocols select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. 
 %\liz{ECVRF by itself does not provide any notion of anonymity.  Thus, subject to DOS attacks (first version of Ouroborous had DOS, fixed by Ouroborous Praos.)} We remark that VRFs cannot provide this level of anonymity, as verifying the correctness of the VRF output of a leader, which is necessary to verify the block of the leader, requires knowledge of the leader's public key.
@@ -60,19 +55,34 @@ They can later provide proof that it was their randomness specifically.
 \\\\
 \noindent \emph{Ring VRFs.} Motivated by the properties of \emph{uniqueness}, \emph{pseudorandomness}, and \emph{anonymity}, we introduce a novel cryptographic primitive called \emph{a ring verifiable random function}.  Ring VRFs enjoy features of both VRFs \cite{vrf_micali}  and ring signatures \cite{ring_accountable,ring_efficient,ring_linkable,ring_noRO,ring_sublinear}. A ring VRF allows a user to generate an output, which is a \emph{unique}, \emph{pseudorandom} number, using their secret key and the input, similar to a VRF.  A ring VRF additionally allows the user to sign the input and any message (e.g., auxiliary data) \liz{Why signing a message is needed, e.g., for leader election.} with a set of public keys (the ring) including their public key, similar to ring signatures. The ring signature attests to the fact that the ring VRF output is the unique output of the input generated with one of the public keys in the ring, and that the same key also signed the message. Verification does not reveal the signer's public key, only that it is contained in the set of public keys.
 This guarantees the \emph{anonymity} of the signer within the set of potential signers.
-Ring VRFs are of theoretical and practical interest and are currently being deployed \cite{Semaphore,BurdgesASV23a}.
-However, the use of ring VRFs in these protocols is implicit, with no formal definitions or security properties specified. \liz{Working on careful wording here.}
-Thus, one of the main contributions of this work is to provide a formal security model for ring VRFs, capturing the desired properties.
+
+A ring VRF provides the pseudorandomness property required in these leader election mechanisms and can replace a VRF in these protocols to provide anonymity to leaders even after they produce their blocks.
+A VRF alone cannot provide this level of anonymity, as verifying the correctness of the VRF output  of a leader, which is necessary to verify the block of the leader, requires knowledge of the leader's public key.
+\liz{Maybe say something about leaking wealth here.}
+A ring VRF provides private verifiable
+randomness, the VRF output, associated with a node's key.
+Concretely, suppose $(\pk_i, \sk_i)$ is the key pair for node $i$.
+For a public input $\msg$ (i.e., the slot number),
+each node can compute $\rVRF.\Eval(\sk_i,\msg) \mapsto \Out$. Then,
+$\Out$ can be used to select the leader with public verification (e.g., if the randomness they output is below a certain threshold).
+The node can provide proof of
+this VRF output without having to reveal its identity -- only that its public key is contained within a ring of keys.
+They can later provide proof that it was their randomness specifically.
+Indeed, ring VRFs are currently being deployed for this purpose \cite{Semaphore,BurdgesASV23a}.
+However, the use of ring VRFs in these protocols is implicit, with no formal definitions or specifications of the security properties they achieve. \liz{Working on careful wording here.}
+Thus, one of the main contributions of this work is to provide a formal security model for ring VRFs, capturing the required security properties for deploying ring VRFs safely and securely at scale.
 \liz{There are other approaches to secret leader election, such as AVRF and whatever Ouroborous Praos does, but they are for PLE. Are there any shortcomings? Why are ring VRFs the ``right" primitive for SSLE?)} 
 \\\\
-\noindent \emph{Formal Modelling.} To capture formally the properties of this new primitive, we provide an ideal functionality for ring VRFs in Section~\ref{sec:functionality}. Some key characteristics of this functionality are as follows (uniqueness, pseudorandomness, and anonymity). First, \liz{@Alistair To Do. Highlight security under malicious keys. EC Reviewer A: ``Are there major novelties from a definitional standpoint?” We could explain shortcomings of prior related definitions.}
+\noindent \emph{Formal Modelling.} To that end,
+%To capture formally the properties of this new primitive, 
+we define an ideal functionality for ring VRFs in Section~\ref{sec:functionality}. Some key characteristics of this functionality are as follows (uniqueness, pseudorandomness, and anonymity). First, \liz{@Alistair To Do. Highlight security under malicious keys. EC Reviewer A: ``Are there major novelties from a definitional standpoint?” We could explain shortcomings of prior related definitions.}
 \\\\
-\emph{Identity Systems.} In addition to leader election, ring VRFs are an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.  The distinctive features of ring VRFs -- pseudorandomness, anonymity and uniqueness -- offer an efficient alternative for anonymous access control systems. For example, in a system that maintains a fixed input for a given service (e.g., a url) and provides a public commitment of the registered public keys, a user who has registered their public key can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms  are  legitimate  all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's  privacy. Moreover, the  system is protected against the Sybil attacks, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. 
+\emph{Identity Systems.} In addition to leader election, ring VRFs are an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.  The distinctive features of ring VRFs -- pseudorandomness, anonymity and uniqueness -- offer an efficient alternative for anonymous access control systems. For example, in a system that maintains a fixed input for a given service (e.g., a url) and provides a public commitment of the registered public keys, a user who has registered their public key can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms  are  legitimate  all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's  privacy. Moreover, the  system is protected against Sybil attacks, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. 
 \liz{Beyond this point needs to be clarified.}
 This protection enables the system to ban certain pseudonyms in cases of abusive behaviors. Thus, the abusive user loses access since they cannot generate  another legitimate pseudonym for this particular service.
 In current anonymous systems, user accountability is primarily addressed through two main approaches: (1) allowing users to authenticate for a fixed duration \cite{limited_authentication1,limited_authentication2,limited_authentication3}, and (2) incorporating mechanisms for privacy revocation administered by a central authority \cite{revocation1,revocation2,revocation3,revocation4}, or through privacy revocation using anonymous committees \cite{anonymous-committee1,anonymous-committee2}.
-In contrast, ring VRFs offer a straightforward and efficient solution for user accountability when compared to existing methods, as they neither impose limitations on user behaviors nor necessitate the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
-In addition to facilitate anonymous authentication, ring VRF  serves as a potent tool for the concept of proof-of-personhood (PoP) \cite{pop2008,pop2017,pop2020} to establish a connection between individuals' real-world identities and virtual identities by preserving the accountability and anonymity of the individual.
+In contrast, ring VRFs offer a straightforward and efficient solution for user accountability when compared to existing methods, as they neither impose limitations on user behaviors \liz{Such as what?} nor necessitate the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
+In addition to facilitate anonymous authentication, ring VRFs  serve as a potent tool for the concept of proof-of-personhood (PoP) \cite{pop2008,pop2017,pop2020} to establish a connection between individuals' real-world identities and virtual identities by preserving the accountability and anonymity of the individual.
 \liz{We need a well-developed section in related work on other identity solutions if we are to include this as a main application.}
 %In this context, an individual can physically enrol in a designated system (e.g., an issuer responsible for issuing identity cards) with a ring VRF key. Then, they present their ring VRF outputs as a virtual identity to another system, with the ring VRF signature serving as verifiable evidence of their physical existence. This process maintains their anonymity across different contexts since each ring VRF output of a corresponding system is unlinkable. 
 \\\\
