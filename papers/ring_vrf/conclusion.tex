@@ -1,12 +1,8 @@
 % !TEX root = crypto.tex
 
-\section{Conclusion and Deployment Considerations}
-\label{sec:conclusion}
+\section{Deployment Considerations}\label{sec:deployment}
 
-In this work, we introduce a novel cryptographic primitive, called a ring VRF, which combines the unique properties of VRFs  and ring signatures. Our new primitive is ripe for use in secret leader election and identity systems.  Ring VRFs may find applications in a wide range of other use cases, including rate limiting systems, rationing, and e-voting, as in \cite{Semaphore}. We propose two distinct ring VRF constructions, one offering flexibility in instantiation and the other focusing on optimizing signature generation within the same ring. To this end, we introduce the notion of a ZK continuation, which enables the efficient regeneration of proofs by preserving the ZK property and is likely of independent interest.
-\\\\
-We now discuss deployment considerations for ring VRFs.
-\liz{Do we have an implementation of either of these that we can point to?}
+We now discuss deployment considerations for ring VRFs. \liz{Anonymize git repo for KZG implementation.}
 
 \paragraph{Instantiation of our second protocol with $ \SpecialG $.} Since $ \SpecialG $ is a $ \ZKCont $, we can instantiate our second protocol with $ \SpecialG$. In this instantiation, we let $ \GG = \grone $ generated in $ \SpecialG.\Setup $.  
 We present an appropriate $ \mathsf{Com}.\mathsf{Commit}(\sk) $ algorithm that, together with $ \SpecialG $, efficiently instantiates the NIZK for $ \Rring^{\mathtt{inner}} $. To make this efficiently provable inside the SNARK,  we use the Jubjub Edwards curve $\ecJ$, which contains a large subgroup $\grJ$ of prime order $p_\grJ$. Here, $p_\grJ < p$ where $ p $ is the order of $\grE$ used in our ring VRF construction. We let $\genJ_0,\genJ_1,\genJ_2 \in \grJ$ be independent generators. We also fix a parameter $ \kappa $ where $(\log_2 p)/2 < \kappa < \log_2 p_\grJ$. $ \mathsf{Com}.\mathsf{Commit}(\sk) $ first samples $\sk_1,\sk_2 \in 2^\kappa$  where $\sk = \sk_0 + \sk_1 \, 2^{\lambda} \mod p$ and samples a blinding factor $d \leftsample \F_{p_\grJ} $. In the end, it outputs $ \sk_0, \sk_1,d $ as an opening and the commitment $\pk=\sk_0\, \genJ_0 + \sk_1\, \genJ_1 + d \genJ_2$ as a public key of our ring VRF construction. This commitment scheme is binding and perfectly hiding, as our ring VRF construction requires, because $ \pk $ is a Pedersen commitment. Indeed, $\pk$ is a Pedersen commitment to $\sk$ because we can represent $ \sk = \sk_0\, \genJ_0 + \sk_1 \mod p$ since we have selected $ \kappa $ accordingly.
@@ -23,4 +19,8 @@ We note that if we did not deploy a Merkle tree hash function for $ \comring $ a
 \paragraph{Instantiation of our first protocol.}  Our instantiation commits to the ring using KZG commitments (i.e., $ \com^*.\commit $) to the $ x $ and $ y $ coordinates of the public keys.
 % This means that we do not need constraints for opening the KZG commitment as the public keys are directly available to use in constranits. 
 One can design a simple constraint system to verify the correctness of such a commitment (i.e., $ \rVRF.\OpenRing $) inside the custom SNARK for $\Rring$ as in \cite{accountable} without additional cost, but  modified to obtain zero-knowledge \cite{plonk}.  For this protocol, the prover needs to know the entire ring, i.e., $\openring$ is the entire ring rather than a KZG opening, which results in $O(n \log n)$ proving time, unlike the second protocol, but the verification time is constant. Even though this instantiation  does not allow fast reproving,  it is concretely fast with proving time under a second for rings of size up to a few thousand (comparable to the benchmarks in \cite{accountable}) without needing opening constraints inside the SNARK. 
+
+\section{Conclusion}\label{sec:conclusion}
+
+In this work, we introduce a novel cryptographic primitive, called a ring VRF, which combines the unique properties of VRFs  and ring signatures. Our new primitive is ripe for use in secret leader election and identity systems.  Ring VRFs may find applications in a wide range of other use cases, including rate limiting systems, rationing, and e-voting, as in \cite{Semaphore}. We propose two distinct ring VRF constructions, one offering flexibility in instantiation and the other focusing on optimizing signature generation within the same ring. To this end, we introduce the notion of a ZK continuation, which enables the efficient regeneration of proofs by preserving the ZK property and is likely of independent interest.
 

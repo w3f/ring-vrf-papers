@@ -21,7 +21,7 @@ Differently than ring VRF, traceable ring signatures  disclose the identity of t
 \\\\
 \noindent\textit{Ring VRFs in Practice.} 
 Ring VRFs are of theoretical and practical interest and are already being deployed.
-Indeed, Semaphore \cite{Semaphore} is similar to a ring VRF in our formalism, which provides a ``nullifier," unique per identity and context but anonymous, along with a signature on a message. However, no formal security definition is provided for Semaphore.  Moreover, our construction distinguishes itself by offering more efficient proving times \liz{Specify.} and offers the potential for proof reuse.
+Indeed, Semaphore \cite{Semaphore} \liz{Used in WorldCoin for ID} is similar to a ring VRF in our formalism, which provides a ``nullifier," unique per identity and context but anonymous, along with a signature on a message. However, no formal security definition is provided for Semaphore.  Moreover, our construction distinguishes itself by offering more efficient proving times \liz{Specify.} and offers the potential for proof reuse.
 
 Sassafras~\cite{Sassafras} is a constant-time block production protocol, which ensures that there is exactly one block produced with constant-time intervals, rather than multiple or no blocks at all.
 Each validator anonymously submits a VRF output (or several VRF outputs). These then determine the order of block producers in the next epoch, when a validator can post a VRF proof to show that it was their output in the corresponding slot. The question then becomes how to anonymously submit a VRF output. The ring VRF gives a proof that the output came from some validator. The protocol also needs an anonymous submission mechanism: it suggests just sending to a random validator who forwards it to everyone.
@@ -34,16 +34,15 @@ Another notable difference is related to the pseudorandomness definition, which 
 Concurrent work \cite{YinZXLR22} presents a cross-chain notary platform where
 committees are elected and incentivized to handle cross-chain operations.
 These committees are elected by cryptographic sortition, realized by a VRF.
-Furthermore, the committee members' identities are hidden via a ring and thus make use of a VRF protocol.
+Furthermore, the committee members' identities are hidden via a ring and thus make use of a ring VRF protocol.
 However, they do not specify the security properties for their ring VRF protocol.
 They provide a zero-knowledge proof of some relation, which they use directly in their proof.
 In particular, their construction uses a sigma protocol that combines 1) a one-out-of-many sigma protocol \liz{cite} to obtain a blinded public key, and 2) the sigma protocol to evaluate the pre-output from the blinded public key. This results in a proof of size $\mathcal{O}(n)$.
 We formally define the security properties of a ring VRF and achieve a proof of size $\mathcal{O}(1)$.
 \liz{Can we find something wrong with this paper?  Their construction (ECVRF + One-Out-of-Many-Proofs) does not double hash the output, which I thought was necessary for (UC) security.}
 \\\\
-\noindent\textit{Commit-and-Prove SNARKs.} zk-continuations are an example of the commit-and-prove approach \cite{LegoSNARK}, linking  in a way similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK}. Our work extends this concept by formalizing the reuse of previously generated proofs through simple transformations while maintaining the zero-knowledge property. Our protocol $ \SpecialG $ is very similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK} with the additional feature of providing an interface for rerandomizing previously generated proofs, all while preserving the zero-knowledge property. \liz{How do ZK continuations differ from malleable proof systems with strong derivation privacy?}
+\noindent\textit{Commit-and-Prove SNARKs.} ZK continuations are an example of the commit-and-prove approach \cite{LegoSNARK}, linking  in a way similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK}. Our work extends this concept by formalizing the reuse of previously generated proofs through simple transformations while maintaining the zero-knowledge property. Our protocol $ \SpecialG $ is very similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK} with the additional feature of providing an interface for rerandomizing previously generated proofs, all while preserving the zero-knowledge property. \liz{How do ZK continuations differ from malleable proof systems with strong derivation privacy?}
 \\\\
- \emph{Anonymous Credentials.} In the identity application given above, ring VRFs resemble context-specific pseudonyms, which first appeared in the context of anonymous credentials~\cite{DBLP:journals/cacm/Chaum85,DBLP:conf/crypto/ChaumE86,EC:CamLys01}. \liz{Comparison with ring VRF? Cite DAA papers too.}
-% In this setting, users have distinct and unlinkable pseudonyms across organizations who play an active role in engaging with users transferring their credentials between them. Ring VRFs enable organizations to be entirely passive, each one defining their own set of context strings and otherwise allowing users to create and authorize their pseudonym for the contexts that are of interest to them.
-\\\\
-In \cite{DBLP:conf/eurocrypt/DamgardDP06,DBLP:conf/ccs/CamenischHKLM06}, users are unlinkable across discrete time periods, which is a more limited setting compared to arbitrary context strings.
+% \emph{Anonymous Credentials.} In the identity application given above, ring VRFs resemble context-specific pseudonyms, which first appeared in the context of anonymous credentials~\cite{DBLP:journals/cacm/Chaum85,DBLP:conf/crypto/ChaumE86,EC:CamLys01}. \liz{Comparison with ring VRF? Cite DAA papers too.}
+%\\\\
+%In \cite{DBLP:conf/eurocrypt/DamgardDP06,DBLP:conf/ccs/CamenischHKLM06}, users are unlinkable across discrete time periods, which is a more limited setting compared to arbitrary context strings.
