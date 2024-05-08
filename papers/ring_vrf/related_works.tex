@@ -2,47 +2,65 @@
 
 \subsection{Related Work}
 
-\noindent\textit{Ring Signatures.} \liz{Mention standard techniques for proving membership in the ring.}
-\\\\
-\noindent\textit{Unique Ring Signatures.} The unique ring signature framework \cite{URCframework} is the closest model to our ring VRF framework particularly in terms of the presence of a deterministic component known as the unique identifier for the signed message. This identifier remains constant for the same signed message even when the ring changes.  Essentially, the unique identifier in the unique ring signature model and the ring VRF evaluation value function equivalently in both models. However, a fundamental distinction lies in the treatment of this identifier. In our ring VRF model, we impose the requirement of pseudorandomness, as defined in \cite{ucvrf,praos}, on this unique identifier, even in the case of malicious parties.
-This requirement is crucial for applications such as lotteries or leader elections where the unique identifier plays a privileged or reward-based role based on predefined conditions. Another definitional difference is that a ring VRF  signature not only prove the correctness of the evaluation value of an input but also signs an auxiliary data independent from the input. This property is needed for anonymous access mechanisms to prevent replay attacks because auxiliary data can be used to effectively bind the ring VRF signature to e.g., a TLS session.
-The signature size of unique ring signature schemes scales either linearly \cite{URCframework,URCfc} or logarithmically  \cite{URCblockchainprivacy,URClattice} with the size of the ring. In contrast, our ring VRF constructions maintain a constant signature size while providing stronger security guarantees. Also our signing and verification algorithms show better asymptotic scalability compared to existing unique ring signatures because they operate with a constant-size  commitment to the ring.
+The most closely related cryptographic primitives to ring VRFs are as follows.
 
-Unique ring signature (URS) schemes \cite{URCframework} aim to address similar challenges as ring VRF in the context of anonymous identity applications. Both generate a unique identifier within the ring signature for each input, which corresponds to the ring VRF output in our case. Unlike ring VRF, where a party can sign any message with a ring VRF signature, unique ring signature schemes do not include the capability to sign such messages. Therefore, leveraging these identifiers for practical authentication, such as in a TLS session, is not straightforward. 
-Beyond this, we demand from a ring VRF output  to be a pseudorandom even if the signer's key is maliciously generated. This property distinguishes it from unique ring signatures. 
-\liz{EC Reviewer A: ``The tag of a unique ring signature has to implicitly be pseudorandom for honest keys in order to not break anonymity. Then, since the tag is required to be unique, it will likely be pseudo-random for maliciously generated keys as well."}
-Although this property may not find immediate use in the identity applications we mentioned, it holds critical significance in applications that grant privileges to parties based on specific criteria associated with their ring VRF output, such as leader elections or lotteries. 
-Ring VRF provides the pseudorandomness property required in these leader election mechanism.
-\\\\
-\noindent\textit{Linkable and Traceable Ring Signatures.} Other related models are linkable ring signatures \cite{ring_linkable,ring_linkablee} and traceable ring signatures \cite{traceable07,traceable_sub}. Linkable ring signatures allows a third party to link whether two ring signatures of two inputs are signed by the same party in the same ring without revealing the identity. This type of linkability property is valuable in applications that impose restrictions on authentications, such as preventing double spending or multiple voting. Akin to ring VRF and unique ring signatures, if a signer signs the same message twice for the same ring and issuer, it becomes evident that both signatures are produced by the same party, although the specific party's identity remains secret. \liz{Why isn't some form of linkability specified in our definition?} Both ring VRF and unique ring signature schemes have this property in a single context through the unique identifier for each party.
-Differently than ring VRF, traceable ring signatures  disclose the identity of the signer when the signer generates two signatures for two different inputs within the same ring and from the same issuer.
-\\\\
-\noindent\textit{Verifiable Random Functions.} \liz{Talk about Unbiasable VRF paper.}
-\\\\
+\smallskip
+\noindent\textit{Ring Signatures.} Ring signatures~\cite{RivestST01}, allow a member of a group, called a ring, to anonymously sign messages on behalf of the group.  Ring signatures require no group manager; the ring can be set up on the fly.  They provide a strong notion of privacy: there is no mechanism for de-anonymizing users from the signatures they produce. \liz{Mention standard techniques for proving membership in the ring.}
+
+\smallskip
+\noindent\textit{Unique Ring Signatures.} Unique ring signatures~ \cite{URCframework} are the closest to ring VRFs, particularly because of the deterministic component, the unique identifier, for the signed message. This identifier remains constant for the same signed message even when the ring changes.  Essentially, the unique identifier in unique ring signatures and the ring VRF evaluation value function are equivalent. However, a fundamental distinction lies in the treatment of this identifier. In our ring VRF model, we impose the requirement of pseudorandomness, as defined in \cite{ucvrf,praos}, on this unique identifier, even in the case of malicious key generation.
+This requirement is crucial for applications, such as lotteries or leader elections, where the unique identifier plays a privileged or reward-based role. 
+A minor difference is that a ring VRF signature not only proves the correctness of the evaluation value of an input, but it also signs auxiliary data independent from the input. This property is needed for anonymous access mechanisms to prevent replay attacks because auxiliary data can be used to effectively bind the ring VRF signature to, e.g., a TLS session.
+
+From an efficiency standpoint, the signature size of unique ring signature schemes scales either linearly \cite{URCframework,URCfc} or logarithmically  \cite{URCblockchainprivacy,URClattice} with the size of the ring. Our ring VRF constructions enjoy constant-size signatures, important for large-scale rings with millions of users.  Furthermore, our signing and verification algorithms show better asymptotic scalability compared to existing unique ring signature schemes because they operate with a constant-size commitment to the ring.
+
+%\liz{Deal with this paragraph.} Unique ring signature (URS) schemes \cite{URCframework} aim to address similar challenges as ring VRF in the context of anonymous identity applications. Both generate a unique identifier within the ring signature for each input, which corresponds to the ring VRF output in our case. Unlike ring VRF, where a party can sign any message with a ring VRF signature, unique ring signature schemes do not include the capability to sign such messages. Therefore, leveraging these identifiers for practical authentication, such as in a TLS session, is not straightforward. 
+%Beyond this, we demand from a ring VRF output  to be a pseudorandom even if the signer's key is maliciously generated. This property distinguishes it from unique ring signatures. 
+%\liz{EC Reviewer A: ``The tag of a unique ring signature has to implicitly be pseudorandom for honest keys in order to not break anonymity. Then, since the tag is required to be unique, it will likely be pseudo-random for maliciously generated keys as well."}
+%Although this property may not find immediate use in the identity applications we mentioned, it holds critical significance in applications that grant privileges to parties based on specific criteria associated with their ring VRF output, such as leader elections or lotteries. 
+%Ring VRF provides the pseudorandomness property required in these leader election mechanism.
+
+\smallskip
+\noindent\textit{Linkable and Traceable Ring Signatures.} Linkable ring signatures~\cite{ring_linkable,ring_linkablee} allow a third party to determine whether two signatures of two inputs are signed by the same party in the same ring, but without revealing the identity of the signer. This type of linkability property is valuable in applications that impose restrictions on authentication, such as preventing double spending or multiple voting. Similar to ring VRFs and unique ring signatures, if a signer signs the same message twice for the same ring and issuer, it becomes evident that both signatures were produced by the same party, although the specific party's identity remains secret. \liz{Why isn't some form of linkability specified in our definition?} Both ring VRFs and unique ring signatures have this property in a single context through the unique identifier for each party.
+In contrast to ring VRFs, traceable ring signatures~\cite{traceable07,traceable_sub} disclose the identity of the signer when the signer generates two signatures for two different inputs within the same ring and from the same issuer.
+
+\smallskip
+\noindent\textit{Anonymous VRF.} \liz{https://eprint.iacr.org/2018/1105 introduces the notion of an anonymous VRF and provides some other applications, like voting, which may help further motivate Ring VRF as well. However, it seems AVRF falls short for other applications, like decentralized identity, described as follows.} An anonymous VRF \cite{GaneshOT19} is a VRF where verification takes places with respect to any number of public keys with the same secret key.  While similar in spirit to ring VRFs, the definition does not account for unpredictability under maliciously chosen keys.  It is, however, possible their construction achieves it, as it is also based on ECVRF, which has been shown to achieve unbiasability~\cite{UnbiasableVRF}.
+%In contrast to ring VRFs, the verification is executed with an ephemeral public key, or pseudonym, which is generated from the underlying public key of the party.  
+%A crucial distinction lies in their uniqueness definitions, as anonymous VRFs ensure the uniqueness of VRF outputs for each (updated) public key and input. Consequently,
+ Anonymous VRFs are not suitable for identity applications for which the VRF output serves as a unique and anonymous identifier, since each ephemeral public key generates a different VRF output.
+%Another notable difference is related to the pseudorandomness definition, which does not guarantee pseudorandomness even when the key belongs to a malicious party. 
+%This limitation can pose challenges in applications like consensus mechanisms as described in \cite{anonymousVRF}, making their use potentially infeasible.
+
+
+\smallskip
 \noindent\textit{Ring VRFs in Practice.} 
 Ring VRFs are of theoretical and practical interest and are already being deployed.
-Indeed, Semaphore \cite{Semaphore} \liz{Used in WorldCoin for ID} is similar to a ring VRF in our formalism, which provides a ``nullifier," unique per identity and context but anonymous, along with a signature on a message. However, no formal security definition is provided for Semaphore.  Moreover, our construction distinguishes itself by offering more efficient proving times \liz{Specify.} and offers the potential for proof reuse.
+Indeed, Semaphore \cite{Semaphore} is similar to a ring VRF in our formalism, providing a ``nullifier," unique per identity and context but anonymous, along with a signature on a message. However, no formal security definition is provided for Semaphore.  Moreover, our construction distinguishes itself by offering faster proving times (See \cite{implementation}) \liz{We really need to say more on this.} and offers the potential for proof reuse for the same ring.
 
-Sassafras~\cite{Sassafras} is a constant-time block production protocol, which ensures that there is exactly one block produced with constant-time intervals, rather than multiple or no blocks at all.
-Each validator anonymously submits a VRF output (or several VRF outputs). These then determine the order of block producers in the next epoch, when a validator can post a VRF proof to show that it was their output in the corresponding slot. The question then becomes how to anonymously submit a VRF output. The ring VRF gives a proof that the output came from some validator. The protocol also needs an anonymous submission mechanism: it suggests just sending to a random validator who forwards it to everyone.
-\liz{What to say about what our paper is doing here...}
-\\\\
-\noindent\textit{Anonymous VRF.} \liz{https://eprint.iacr.org/2018/1105 introduces the notion of an anonymous VRF and provides some other applications, like voting, which may help further motivate Ring VRF as well. However, it seems AVRF falls short for other applications, like decentralized identity, described as follows.} An anonymous VRF \cite{anonymousVRF} is a special type of VRF designed to enable verification of the VRF output without dependence on the party's key.  In contrast to ring VRFs, the verification is executed with another public key which is generated from the public key of the party.  A crucial distinction lies in their  uniqueness definitions, as anonymous VRFs ensure the uniqueness of VRF outputs for each (updated) public key and input. Consequently, anonymous VRFs are not suitable for identity applications where the VRF output serves as a unique and anonymous identifier, as each updated public key generates a different VRF output.
-Another notable difference is related to the pseudorandomness definition, which does not guarantee pseudorandomness even when the key belongs to a malicious party. This limitation can pose challenges in applications like consensus mechanisms as described in \cite{anonymousVRF}, making their use potentially infeasible.
-\\\\
+Sassafras~\cite{Sassafras} is a constant-time block production protocol, which employs SSLE (rather than PLE).
+%which ensures that there is exactly one block produced with constant-time intervals, rather than multiple or no blocks at all (i.e., SSLE rather than PLE).
+Each validator anonymously submits a VRF output. These then determine the order of block producers in the next epoch, at which point a validator can post a VRF proof to show that it was their output in the corresponding slot.
+%The question then becomes how to anonymously submit a VRF output. The ring VRF gives a proof that the output came from some validator. The protocol also needs an anonymous submission mechanism: it suggests just sending to a random validator who forwards it to everyone.
+Sassafras uses a ring VRF to provide anonymity to leaders during the election process.
+However, the security model provided for ring VRFs is incomplete.  
+We believe our formalism fills this gap.
+
+\smallskip
 \noindent\textit{Concurrent Work.} 
-Concurrent work \cite{YinZXLR22} presents a cross-chain notary platform where
+\cite{YinZXLR22} presents a cross-chain notary platform where
 committees are elected and incentivized to handle cross-chain operations.
 These committees are elected by cryptographic sortition, realized by a VRF.
-Furthermore, the committee members' identities are hidden via a ring and thus make use of a ring VRF protocol.
-However, they do not specify the security properties for their ring VRF protocol.
-They provide a zero-knowledge proof of some relation, which they use directly in their proof.
-In particular, their construction uses a sigma protocol that combines 1) a one-out-of-many sigma protocol \liz{cite} to obtain a blinded public key, and 2) the sigma protocol to evaluate the pre-output from the blinded public key. This results in a proof of size $\mathcal{O}(n)$.
-We formally define the security properties of a ring VRF and achieve a proof of size $\mathcal{O}(1)$.
+Furthermore, a ring VRF is used to hide committee members' identities.
+No formal security properties are specified for their ring VRF protocol.
+They simply provide a zero-knowledge proof of some relation and use it directly in their proof.
+In particular, their construction uses a sigma protocol that combines 1) a one-out-of-many sigma protocol \cite{GrothK15} to obtain a blinded public key, and 2) the sigma protocol to evaluate the pre-output from the blinded public key. This results in a proof of size of $\mathcal{O}(n)$.
+We formally define the security properties of a ring VRF and achieve a proof of size of $\mathcal{O}(1)$.
 \liz{Can we find something wrong with this paper?  Their construction (ECVRF + One-Out-of-Many-Proofs) does not double hash the output, which I thought was necessary for (UC) security.}
-\\\\
+
+\smallskip
 \noindent\textit{Commit-and-Prove SNARKs.} ZK continuations are an example of the commit-and-prove approach \cite{LegoSNARK}, linking  in a way similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK}. Our work extends this concept by formalizing the reuse of previously generated proofs through simple transformations while maintaining the zero-knowledge property. Our protocol $ \SpecialG $ is very similar to the ccGroth16 construction from LegoSNARK \cite{LegoSNARK} with the additional feature of providing an interface for rerandomizing previously generated proofs, all while preserving the zero-knowledge property. \liz{How do ZK continuations differ from malleable proof systems with strong derivation privacy?}
-\\\\
+
 % \emph{Anonymous Credentials.} In the identity application given above, ring VRFs resemble context-specific pseudonyms, which first appeared in the context of anonymous credentials~\cite{DBLP:journals/cacm/Chaum85,DBLP:conf/crypto/ChaumE86,EC:CamLys01}. \liz{Comparison with ring VRF? Cite DAA papers too.}
 %\\\\
 %In \cite{DBLP:conf/eurocrypt/DamgardDP06,DBLP:conf/ccs/CamenischHKLM06}, users are unlinkable across discrete time periods, which is a more limited setting compared to arbitrary context strings.

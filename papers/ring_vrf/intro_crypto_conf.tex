@@ -18,32 +18,32 @@ That is, only the user holding the secret key can perform evaluations, but any a
 verify an output, given the public verification key and a proof of correctness.
 VRFs have received widespread adoption in practice, including in e-lotteries \cite{MicaliR02,LiangBM20} and secure DNS \cite{GoldbergNPRVZ15,PapadopoulosWHNVRG17}, and have attracted significant interest in recent years due to their use in proof-of-stake (PoS) blockchains for secret leader election \cite{ChenM19,KiayiasRDO17,DavidGKR17,BurdgesASV23a}.
 In particular, the RSA Full Domain Hash VRF (RSA-FDH-VRF) and the Elliptic Curve VRF (ECVRF) are the subject of standardization efforts through the IETF, including a recent RFC \cite{VRF-RFC}.
-\\\\
+
+\smallskip
 \noindent \emph{Leader Election.} 
 A single leader election (SLE) is a way to elect one leader randomly among the
 parties in a distributed system. If the leader is secret (i.e., unpredictable), then it is called
 a secret single leader election (SSLE).
 A single leader makes for an attractive target in real-world systems. Indeed, the leader may be malicious, or honest leaders may be targeted, e.g.,
-by denial-of-service (DoS) attacks. One solution to this is to frequently change the leader and
-to have a secret leader election protocol which hides the leader until they announce themself.
+by denial-of-service (DoS) attacks. One solution is to frequently change the leader and
+to have a secret leader election protocol that hides the leader until they announce themself.
 A leader election mechanism is essential for blockchain protocols if the leader is
 the node who is eligible to publish a block.
 One election mechanism for blockchain protocols is proof-of-work, where a node, called a miner, is elected as a leader if it generates a block whose hash is less than a threshold. Some
-proof-of-stake (PoS) protocols \liz{cite[17,28,18,22]}use a similar approach with respect to stake instead of computational power. Even though this election mechanism provides secrecy of
-the leader(s) and requires no communication with the other nodes, it has some drawbacks. The
-main problem is that the outcome is probabilistic since the leaders are selected in expectation
+proof-of-stake (PoS) protocols \cite{DaianPS19,KiayiasRDO17,DavidGKR18,Dfinity} use a similar approach with respect to stake instead of computational power. Even though this election mechanism provides secrecy of
+the leader(s) and requires no communication with the other nodes, it has some drawbacks. In particular, the outcome is probabilistic since the leaders are selected in expectation
 with respect to their computational power or stake. Therefore, there can be multiple leaders or
 no leaders at all. If the election outcome has more than one leader, then the efforts of the leaders
 except one will be wasted because they are not aware of other leaders. If the election outcome has
 no leader, then the time to extend the blockchain will be wasted. Moreover,
-it has been shown by Azouvi and Cappelletti \liz{cite [1]} that PoS protocols with secret single leader
+it has been shown by Azouvi and Cappelletti \cite{AzouviC21} that PoS protocols with secret single leader
 election (SSLE) provide higher security compared to probabilistic secret leader election (PLE).
 Therefore, it is preferable to have an election mechanism that selects only one leader to generate a
 block.
 An SSLE scheme is said to be secure \cite{BonehEHG20} if it satisfies uniqueness (i.e., electing only one leader), unpredictability (i.e., hiding the leader), and fairness (i.e., having equal chance of becoming the leader).
 \liz{Possibly say more on this, i.e., not leaking wealth.}
 
-ECVRF is a core primitive in the leader election mechanisms of proof-of-stake blockchains, such as Algorand \cite{ChenM19} and Cardano \cite{KiayiasRDO17,DavidGKR17}, which employ PLE, and Polkadot \cite{BurdgesASV23a}, which employs SSLE.
+ECVRF is a core primitive in the leader election mechanisms of PoS blockchains, such as Algorand \cite{ChenM19} and Cardano \cite{KiayiasRDO17,DavidGKR17}, which employ PLE, and Polkadot \cite{BurdgesASV23a}, which employs SSLE.
 RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs the could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
 %
 %For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. 
@@ -52,7 +52,8 @@ RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chos
 %\liz{ECVRF by itself does not provide any notion of anonymity.  Thus, subject to DOS attacks (first version of Ouroborous had DOS, fixed by Ouroborous Praos.)} We remark that VRFs cannot provide this level of anonymity, as verifying the correctness of the VRF output of a leader, which is necessary to verify the block of the leader, requires knowledge of the leader's public key.
 %\liz{EC Reviewer B: ``Why this is the case? I thought future leaders are selected based on the outputs, which are public anyway?"}
 %\liz{Many of these are PLE protocols, not SSLE, which are subject to long-range attacks. We are thus interested in SSLE.}
-\\\\
+
+\smallskip
 \noindent \emph{Ring VRFs.} Motivated by the properties of \emph{uniqueness}, \emph{pseudorandomness}, and \emph{anonymity}, we introduce a novel cryptographic primitive called \emph{a ring verifiable random function}.  Ring VRFs enjoy features of both VRFs \cite{vrf_micali}  and ring signatures \cite{ring_accountable,ring_efficient,ring_linkable,ring_noRO,ring_sublinear}. A ring VRF allows a user to generate an output, which is a \emph{unique}, \emph{pseudorandom} number, using their secret key and the input, similar to a VRF.  A ring VRF additionally allows the user to sign the input and any message (e.g., auxiliary data) \liz{Why signing a message is needed, e.g., for leader election.} with a set of public keys (the ring) including their public key, similar to ring signatures. The ring signature attests to the fact that the ring VRF output is the unique output of the input generated with one of the public keys in the ring, and that the same key also signed the message. Verification does not reveal the signer's public key, only that it is contained in the set of public keys.
 This guarantees the \emph{anonymity} of the signer within the set of potential signers.
 
@@ -62,47 +63,73 @@ A VRF alone cannot provide this level of anonymity, as verifying the correctness
 A ring VRF provides private verifiable
 randomness, the VRF output, associated with a node's key.
 Concretely, suppose $(\pk_i, \sk_i)$ is the key pair for node $i$.
-For a public input $\msg$ (i.e., the slot number),
+For a random public input $\msg$ (i.e., the slot number),
 each node can compute $\rVRF.\Eval(\sk_i,\msg) \mapsto \Out$. Then,
 $\Out$ can be used to select the leader with public verification (e.g., if the randomness they output is below a certain threshold).
 The node can provide proof of
 this VRF output without having to reveal its identity -- only that its public key is contained within a ring of keys.
 They can later provide proof that it was their randomness specifically.
-Indeed, ring VRFs are currently being deployed for this purpose \cite{Semaphore,BurdgesASV23a}.
-However, the use of ring VRFs in these protocols is implicit, with no formal definitions or specifications of the security properties they achieve. \liz{Working on careful wording here.}
-Thus, one of the main contributions of this work is to provide a formal security model for ring VRFs, capturing the required security properties for deploying ring VRFs safely and securely at scale.
-\liz{Proper security definition important since securing billions in assets. There are other approaches to secret leader election, such as AVRF and whatever Ouroborous Praos does, but they are for PLE. Are there any shortcomings? Why are ring VRFs the ``right" primitive for SSLE?)} 
-\\\\
-\noindent \emph{Formal Modelling.} To that end,
+Indeed, ring VRFs are currently being deployed for anonymous leader election~\cite{BurdgesASV23a}, but also appear in digital identity systems~\cite{Semaphore,Worldcoin}.
+Given that these systems are being used to secure billions in assets and to protect the privacy and identities of millions of users,
+defining an appropriate security model for this primitive is paramount to the security of these systems in practice.
+%Thus, proper security definitions are paramount to the security of these systems, since 
+%However, the use of ring VRFs in these protocols is implicit, with no formal definitions or specifications of the security properties they achieve. \liz{Working on careful wording here.}
+One of the main contributions of this work is to provide a formal security model for ring VRFs, capturing the required security properties for deploying ring VRFs safely and securely at scale.
+\liz{There are other approaches to secret leader election, such as AVRF and whatever Ouroborous Praos does, but they are for PLE. What are their shortcomings? Why are ring VRFs the ``right" primitive for (SS)LE?)} 
+
+\smallskip
+\noindent \emph{Formal Modelling.} To this end,
 %To capture formally the properties of this new primitive, 
-we define a UC ideal functionality for ring VRFs in Section~\ref{sec:functionality}. To obtain the privacy properties we need, our functionality needs not to leak too much information to the adversary in the ideal world. This complicates the functionality a little and to deal with this, and also to be as useful as a potentially simpler game-based defintion, we explicitly show that in the ideal world, the functionality satisfies the necessary properties such as (uniqueness, randomness, and anonymity). As with UC definitions for VRF, outputs for malicious keys are also random in the ideal world, which is needed for fairness in consensus. 
-\liz{@Alistair To Do. Highlight security under malicious keys. EC Reviewer A: ``Are there major novelties from a definitional standpoint?” We could explain shortcomings of prior related definitions.}
-\\\\
-\emph{Identity Systems.} In addition to leader election, ring VRFs are an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.  The distinctive features of ring VRFs -- pseudorandomness, anonymity and uniqueness -- offer an efficient alternative for anonymous access control systems. For example, in a system that maintains a fixed input for a given service (e.g., a url) and provides a public commitment of the registered public keys, a user who has registered their public key can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms  are  legitimate  all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's  privacy. Moreover, the  system is protected against Sybil attacks, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. 
-\liz{Beyond this point needs to be clarified.}
-This protection enables the system to ban certain pseudonyms in cases of abusive behaviors. Thus, the abusive user loses access since they cannot generate  another legitimate pseudonym for this particular service.
-In current anonymous systems, user accountability is primarily addressed through two main approaches: (1) allowing users to authenticate for a fixed duration \cite{limited_authentication1,limited_authentication2,limited_authentication3}, and (2) incorporating mechanisms for privacy revocation administered by a central authority \cite{revocation1,revocation2,revocation3,revocation4}, or through privacy revocation using anonymous committees \cite{anonymous-committee1,anonymous-committee2}.
-In contrast, ring VRFs offer a straightforward and efficient solution for user accountability when compared to existing methods, as they neither impose limitations on user behaviors \liz{Such as what?} nor necessitate the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
-In addition to facilitate anonymous authentication, ring VRFs  serve as a potent tool for the concept of proof-of-personhood (PoP) \cite{pop2008,pop2017,pop2020} to establish a connection between individuals' real-world identities and virtual identities by preserving the accountability and anonymity of the individual.
+we define a UC ideal functionality for ring VRFs in Section~\ref{sec:functionality}. To obtain the privacy properties we need, our functionality needs to not leak too much information to the adversary in the ideal world. 
+%This complicates the functionality somewhat and to deal with this, and also to be as useful as a potentially simpler game-based definition, 
+This leads to nuances in the definition, which we handle by explicitly showing that, in the ideal world, the functionality satisfies the necessary properties, such as uniqueness, randomness, and anonymity. 
+%As with UC definitions for VRFs, outputs for malicious keys are also random in the ideal world, which is needed for fairness in consensus. 
+The key property we capture in our definition is that the VRF output for any key pair must match the truly random values returned by the ideal functionality.
+This is essential for fairness in consensus, as it prevents adversaries from skewing the output distribution.
+This property is referred to as ``unpredictability under malicious key generation" for (regular) VRFs in RFC 9381~\cite{VRF-RFC}.
+%and guarantees that if the input has sufficient entropy (i.e., cannot be predicted), then the correct output is indistinguishable from random, even if the VRF keys are maliciously generated.
+Unpredictability is a bit of a misnomer, as it is not enough for a leader to be ``hard to predict," but rather that the leader also cannot be biased.
+While these subtleties have been explored in \cite{DavidGKR18} and very recently in~\cite{UnbiasableVRF} for (regular) VRFs, definitions adding an anonymity layer to VRFs, such as \cite{GaneshOT19,YinZXLR22}, fail to capture this property.
+\liz{EC Reviewer A: ``Are there major novelties from a definitional standpoint?” We could explain shortcomings of prior related definitions.}
+
+\smallskip
+\emph{Identity Systems.} In addition to leader election, ring VRFs are an attractive option for identity systems, where users can register their public keys and generate pseudonyms using ring VRF outputs, ensuring privacy protection while preventing Sybil attacks.  The distinctive features of ring VRFs -- uniqueness, pseudorandomness, and anonymity -- offer an efficient alternative for anonymous access control systems. For example, in a system that maintains a fixed input for a given service (e.g., a url) and provides a public commitment of the registered public keys, a user who has registered their public key can create a ring VRF output using the fixed input and their key, which serves as their pseudonym.  The user can then use this pseudonym as an identity while accessing a service provided by the system. At the same time, they can prove that their pseudonyms are legitimate all without revealing their true identity. Namely, they generate a ring VRF signature which shows that their pseudonym is associated with one of the registered users. In this way, the identity system protects the user's privacy. 
+Importantly, ring VRFs achieve public auditability without requiring a central authority, or trust in a group of authorities.
+Moreover, the system is protected against Sybil attacks, as the ring VRF protocol ensures that a user can produce only one pseudonym per input. 
+% \liz{Beyond this point needs to be clarified.} 
+%This protection enables the system to ban certain pseudonyms in cases of abusive behaviors. Thus, the abusive user loses access since they cannot generate  another legitimate pseudonym for this particular service.
+%In current anonymous systems, user accountability is primarily addressed through two main approaches: (1) allowing users to authenticate for a fixed duration \cite{limited_authentication1,limited_authentication2,limited_authentication3}, and (2) incorporating mechanisms for privacy revocation administered by a central authority \cite{revocation1,revocation2,revocation3,revocation4}, or through privacy revocation using anonymous committees \cite{anonymous-committee1,anonymous-committee2}.
+%In contrast, ring VRFs offer a straightforward and efficient solution for user accountability when compared to existing methods, as they neither impose limitations on user behaviors \liz{Such as what?} nor necessitate the involvement of central authorities or anonymous committees to revoke the privacy of a malicious user.
+In addition to anonymous authentication, ring VRFs serve as a potent tool in proof-of-personhood (PoP) \cite{pop2008,pop2017,pop2020} to establish a connection between individuals' real-world identities and virtual identities in a privacy-preserving manner.
+%by preserving the accountability and anonymity of the individual.
+Indeed, Semaphore~\cite{Semaphore}, which resembles a ring VRF, is currently incorporated into the Worldcoin digital identity protocol~\cite{Worldcoin} for privacy-preserving authentication of biometric data.
 \liz{We need a well-developed section in related work on other identity solutions if we are to include this as a main application.}
 %In this context, an individual can physically enrol in a designated system (e.g., an issuer responsible for issuing identity cards) with a ring VRF key. Then, they present their ring VRF outputs as a virtual identity to another system, with the ring VRF signature serving as verifiable evidence of their physical existence. This process maintains their anonymity across different contexts since each ring VRF output of a corresponding system is unlinkable. 
-\\\\
+
+\smallskip
 \emph{Our Constructions.}
-\liz{We use a variant of ECVRF and provide a  rigorous security analysis for our construction.  We also include deployment considerations in Section~\ref{sec:conclusion}.}
- We design two efficient ring VRF protocols that can be applied to real-world scenarios.
-In simple terms,  our ring VRF signatures have components dedicated to verifying the output as well as confirming key membership in the ring. Some scenarios require the generation of multiple ring VRF signatures for different inputs for \emph{the same ring}. In these scenarios, \liz{give examples of scenarios} since the ring does not change only the output changes, an optimized approach to generate a new signature given another signature generated for the same ring would be as follows:  generate a new component only for the aspects directly associated with the correctness of the ring VRF output and  rerandomize the relevant component of a prior signature indicating the existence of the signing key in the ring. This optimized solution at the same time should preserve both verifiability and anonymity of the optimized signature.
-To this end, we introduce a  new notion called  a \emph{zero-knowledge continuation}. ZK continuations provide a way to efficiently prove a statement with a simple transformation of an existing proof of the same statement. After this transformation, the new proof remains unlinkable to the prior proofs. 
-\\\\
-\noindent \textbf{Our Contributions.} The contributions of this work are twofold.  The first is definitional; the second is a set of highly efficient and secure ring VRF constructions.  Specifically,
+ We design two efficient ring VRF constructions based on ECVRF, which are suitable for the applications described above.
+Our ring VRF signatures have components dedicated to verifying the output as well as confirming key membership in the ring. Some scenarios require the generation of multiple ring VRF signatures for different inputs for \emph{the same ring}.
+Indeed, in practice, the ring may stay the same for an extended period of time, or a ``popular" ring may be used repeatedly.
+\liz{Can we give an explicit example for leader election or identity applications?}
+In this case, since only the output changes, but not the ring, an optimized approach to generate a new signature, given another signature generated for the same ring, would be as follows:  generate a new component only for the aspects directly associated with the correctness of the ring VRF output and  rerandomize the relevant component of a prior signature indicating the existence of the signing key in the ring. This optimized solution, at the same time, should preserve both verifiability and anonymity of the optimized signature.
+To this end, we introduce a  new notion, called  a \emph{zero-knowledge continuation}. ZK continuations provide a way to efficiently prove a statement with a simple transformation of an existing proof of the same statement. After this transformation, the new proof remains unlinkable to prior proofs. 
+
+\medskip
+\noindent \textbf{Our Contributions.} The contributions of this work are twofold, both definitional and constructive:
+%Concretely, our results are as follows:
  \begin{itemize}
- 	\item We formally define the security of a ring VRF in the universal composability (UC) model. For this, we construct a functionality $ \fgvrf $ and verify the security properties that $ \fgvrf $ provides.
+ 	\item We formally define the security of a ring VRF in the universal composability (UC) framework~\cite{canetti1,canetti2}. We define a functionality $ \fgvrf $ that captures the desired security properties of uniqueness, pseudorandomness, and anonymity.  Our security definition guarantees the important property of unpredictability under malicious keys.
+	
+	\item We provide an efficient construction of a ring VRF based on ECVRF, and prove that it realizes our functionality $ \fgvrf $.  
  	
- 	\item We introduce a new notion called zero-knowledge (ZK) continuations  which defines the transformation of a valid proof into another valid and unlinkable proof of the same statement through efficient operations. Essentially, this allows a prover to generate an initially costly proof and subsequently reuse it by simply rerandomizing it,  while maintaining unlinkability with other proofs. 
+ 	\item We introduce a new notion, called a zero-knowledge (ZK) continuation, which defines the transformation of a valid proof into another valid and unlinkable proof of the same statement through efficient operations.  Essentially, this allows a prover to generate an initially costly proof and subsequently reuse it by simply rerandomizing it,  while maintaining unlinkability with other proofs. 
  	%This novel notion provides us with a practical tool for developing more efficient ring VRF constructions.
  	
- 	\item We construct two distinct  ring VRF protocols. The first protocol is designed to be utilized with a non-interactive zero-knowledge (NIZK) proving system with our specific relations. The second protocol is more specialized, allowing instantiation with any zero-knowledge continuation. The latter offers an efficient solution for ring VRF applications that necessitate the generation of multiple signatures for the same ring. We show that both of our protocols are UC secure.
- 	
- 	\item 	We construct a protocol called $ \SpecialG $  which  is a simple transformation of any Groth16 proof into a new proof by deploying the rerandomization idea of LegoSNARK ccGro16 \cite{LegoSNARK}. We show that $ \SpecialG $ is a zero-knowledge continuation, making it suitable for deployment in instantiating our second protocol. $ \SpecialG $'s reproving time is reduced to constant after running once a linear time proving algorithm.  Deployment considerations and an efficiency analysis of both constructions can be found Section~\ref{sec:deployment}.
- 	 
-  
- \end{itemize}
+ 	\item  We provide a second efficient construction of a ring VRF, which may be instantiated with any zero-knowledge continuation.
+	This offers an efficient solution for applications that necessitate the generation of multiple signatures for the same ring. We prove that our second construction also realizes our functionality $ \fgvrf $.
+%	We propose a second ring VRF construction that is more specialized.  Our first construction is designed to be utilized with a non-interactive zero-knowledge (NIZK) proving system with our specific relations, whereas our second construction allows instantiation with any zero-knowledge continuation.
+ 	Furthermore, we construct a protocol, called $ \SpecialG $, which  is a simple transformation of any Groth16 proof into a new proof by employing the rerandomization idea of LegoSNARK ccGro16 \cite{LegoSNARK}. We show that $ \SpecialG $ is a zero-knowledge continuation, making it suitable for instantiating our second ring VRF protocol. The reproving time of $ \SpecialG $ is constant, after running a linear-time proving algorithm once.  
+	\end{itemize}
+
+Deployment considerations and an efficiency analysis of both constructions can be found Section~\ref{sec:deployment} as well as an implementation in \cite{implementation}.

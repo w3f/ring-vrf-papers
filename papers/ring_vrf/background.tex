@@ -1,4 +1,4 @@
-% !TEX root = main.tex
+% !TEX root = crypto.tex
 
 \newcommand{\com}{\mathsf{Com}}
 \newcommand{\open}{\mathsf{Open}}
@@ -7,65 +7,96 @@
 \section{Preliminaries} %It is better name because this section contains information that helps reader to understand the later sections better
 \label{sec:background}
 
-\liz{Rework Prelims.} We  give definitions of some  primitives that help us to construct our protocols.
- underlying both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs.
+Let $\secparam \in \N$ denote the security parameter and $1^{\secparam}$ its unary
+representation.
+A function $f : \N \rightarrow \mathbb{R}$ is called \emph{negligible} if for all $c
+\in \mathbb{R}, c > 0$, there exists $k_0 \in \N$
+such that
+$\lvert f(k) \rvert < \frac{1}{k^c}$ for all $k \in \N, k \geq k_0$.
+For a non-empty set $S$, let $x\leftsample S$ denote sampling
+an element of $S$ uniformly at random and assigning it to $x$.
+%We use $\set{n}$ to represent the set $\{1,\ldots,n \}$ and $[0..n]$ to represent the set $\{0,\ldots,n \}$.
+%We denote vectors in bold font; $\bfa = ( a_1, \ldots, a_n )$.
 
- As our ring VRF is built by composing them,
- We briefly recall the primitives and security assumptions underlying
- both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs.
+Let PPT denote probabilistic polynomial time.  Algorithms are randomized unless explicitly noted otherwise.
+Let $y \gets A(x;\omega)$ denote running algorithm $A$ on
+input $x$ and randomness $\omega$ and assigning its output to $y$.
+Let $y \leftsample A(x)$
+denote $y \gets A(x;\omega)$ for a uniformly random $\omega$.
+%The set of values that have non-zero probability of being output by $A$ on input $x$ is denoted by $[A(x)]$.
+
+\begin{definition}[Commitment Scheme] A commitment scheme $ \com$ over message space $\mathcal{M}$, opening space $\mathcal{T}$, and commitment space $\mathcal{C}$, consists of the following polynomial-time algorithms:	
+\begin{itemize}
+\item$ \pp_{\mathsf{cm}} \gets \com.\mathsf{Setup}(\secparam)$: Setup is a probabilistic algorithm which takes as input the security parameter $1^\kappa$ and outputs the set of public parameters $\pp_{\mathsf{cm}}$.
+%
+\item$ \mathsf{cm} \gets \com.\commit(\pp_{\mathsf{cm}}, m,\tau)$: The commitment algorithm takes as input $\pp_{\mathsf{cm}}$ and a message $m \in \mathcal{M}$ along with a trapdoor $\tau\in \mathcal{T}$, and outputs a commitment $\mathsf{cm} \in \mathcal{C}$.
+%
+\item $0/1 \gets \com.\mathsf{Verify}(\pp_{\mathsf{cm}}, \mathsf{cm}, m' ,\tau')$: Verification is a deterministic algorithm which takes as input $\pp_{\mathsf{cm}}$, a commitment $\mathsf{cm} \in \mathcal{C}$, a message $m' \in \mathcal{M}$, and an opening value $\tau' \in \mathcal{T}$, and outputs either $0$ (reject) or $1$ (accept).
+\end{itemize}	
+\end{definition}
+
+Informally, the primary security requirements for a commitment scheme are \emph{correctness}, \emph{hiding}, and \emph{binding}. Correctness ensures that correctly generated commitments pass the verification phase. The hiding property guarantees that the commitment does not reveal any information about the hidden value, while binding ensures that a committer cannot open a commitment to two distinct messages.
 
 
-\subsection{Elliptic Curves}
-\label{sec:ec_background}
-
-% As our ring VRF is built by composing them, 
+%\liz{Rework Prelims.} We  give definitions of some  primitives that help us to construct our protocols.
+% underlying both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs.
+%
+% As our ring VRF is built by composing them,
 % We briefly recall the primitives and security assumptions underlying
-% both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs. 
-
-We obey mathematical and cryptographic implementation convention by 
-adopting additive notation for elliptic curve  scalar multiplications and 
-multiplicative notation for pairing target groups.
-
-All objects implicitly depend on a security parameter \secparam.
-All protocols therefore have an implicit parameter generation algorithm,
-which output their hash functions, elliptic curves, and some independent base points on the elliptic curves.
-
-We need an elliptic curve $\ecE$ over a field of characteristic $q$,
-equipped with a type III pairing $e : \grE_1 \times \grE_2 \to \grE_T$,
-where the groups  $\grE_1 \le \ecE[\F_q]$, $\grE_2 \le \ecE[\F_{q^2}]$, and
-$\grE_T \le \F^*_{q^{12}}$ all have prime order $p \approx 2^{2\secparam}$. 
-Let $\gone$ and $\gtwo$ be the generators of $\grE_1$ and $\grE_2$, respectively. 
-
-We write $\grE$ when discussing the Chaum-Pedersen DLEQ proofs, which do
-not employ pairings, but $\grE$ always denotes $\grE_1$ eventually.
-We avoid pairing unfriendly assumptions like DDH of course, but really
-we employ the algebraic group model (AGM) throughout.
-
-We sweep cofactor concerns under the rug when discussing Groth16,
-where pairings libraries have traditionally enforced group membership in
-$\grE_1$ or $\grE_2$ during deserialization.  We explicitly multiply by the
-effective cofactor $h$ when doing Chaum-Pedersen DLEQ proofs though, as not
-doing so risks miss-reading by implementers.  Yet, this becomes redundant
-if deserialization proves group membership, meaning $h=1$.
-
-We also let $\ecJ$ denote a ZCash Sapling style ``JubJub'' Edwards curve
-over $\F_p$, with a distinguished subgroup $\grJ$ of prime order $p_\grJ$,
-so that SNARKs on $\ecE$ prove $\grJ$ arithmetic relatively cheaply.
-Aside from Jubjub, we optionally want a ``sister'' Edwards curve $\ecEsis$,
-with a subgroup $\grE'$ of the same order $p$ as $\grE_1$,
- but which lacks any pairing.
-
-We let $H_p : \{0,1\}^* \to \F_p$ and $H_{\grEsis} : \{0,1\}^* \to \grEsis$
-denote a hash-to-field and a hash-to-curve with ranges $\F_p$ and $\grEsis$, respectively.  
-We only ever hash-to-$\ecEsis$ because hash-to-$\grE_1$ create a miss-use
-footgun for privacy.  Also hash-to-$\ecEsis$ is faster.
-We let $\Hout$ denote the hash to the VRF output space,
- usually an extensible output function like Shake128.
-We model all hashes as random oracles.
-
-All our security proofs ignore these underlying elliptic curve concerns,
-so $\grE_1 = \grEsis$ and cofactors are ignored. DDH is hard in $\grE_1$ and $\grJ$.
-AGM is used for $\ecE$ in Groth16 sections, or wherever is convenient. 
+% both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs.
+%
+%
+%\subsection{Elliptic Curves}
+%\label{sec:ec_background}
+%
+%% As our ring VRF is built by composing them, 
+%% We briefly recall the primitives and security assumptions underlying
+%% both Chaum-Pedersen DLEQ proofs and pairing based zkSNARKs. 
+%
+%We obey mathematical and cryptographic implementation convention by 
+%adopting additive notation for elliptic curve  scalar multiplications and 
+%multiplicative notation for pairing target groups.
+%
+%All objects implicitly depend on a security parameter \secparam.
+%All protocols therefore have an implicit parameter generation algorithm,
+%which output their hash functions, elliptic curves, and some independent base points on the elliptic curves.
+%
+%We need an elliptic curve $\ecE$ over a field of characteristic $q$,
+%equipped with a type III pairing $e : \grE_1 \times \grE_2 \to \grE_T$,
+%where the groups  $\grE_1 \le \ecE[\F_q]$, $\grE_2 \le \ecE[\F_{q^2}]$, and
+%$\grE_T \le \F^*_{q^{12}}$ all have prime order $p \approx 2^{2\secparam}$. 
+%Let $\gone$ and $\gtwo$ be the generators of $\grE_1$ and $\grE_2$, respectively. 
+%
+%We write $\grE$ when discussing the Chaum-Pedersen DLEQ proofs, which do
+%not employ pairings, but $\grE$ always denotes $\grE_1$ eventually.
+%We avoid pairing unfriendly assumptions like DDH of course, but really
+%we employ the algebraic group model (AGM) throughout.
+%
+%We sweep cofactor concerns under the rug when discussing Groth16,
+%where pairings libraries have traditionally enforced group membership in
+%$\grE_1$ or $\grE_2$ during deserialization.  We explicitly multiply by the
+%effective cofactor $h$ when doing Chaum-Pedersen DLEQ proofs though, as not
+%doing so risks miss-reading by implementers.  Yet, this becomes redundant
+%if deserialization proves group membership, meaning $h=1$.
+%
+%We also let $\ecJ$ denote a ZCash Sapling style ``JubJub'' Edwards curve
+%over $\F_p$, with a distinguished subgroup $\grJ$ of prime order $p_\grJ$,
+%so that SNARKs on $\ecE$ prove $\grJ$ arithmetic relatively cheaply.
+%Aside from Jubjub, we optionally want a ``sister'' Edwards curve $\ecEsis$,
+%with a subgroup $\grE'$ of the same order $p$ as $\grE_1$,
+% but which lacks any pairing.
+%
+%We let $H_p : \{0,1\}^* \to \F_p$ and $H_{\grEsis} : \{0,1\}^* \to \grEsis$
+%denote a hash-to-field and a hash-to-curve with ranges $\F_p$ and $\grEsis$, respectively.  
+%We only ever hash-to-$\ecEsis$ because hash-to-$\grE_1$ create a miss-use
+%footgun for privacy.  Also hash-to-$\ecEsis$ is faster.
+%We let $\Hout$ denote the hash to the VRF output space,
+% usually an extensible output function like Shake128.
+%We model all hashes as random oracles.
+%
+%All our security proofs ignore these underlying elliptic curve concerns,
+%so $\grE_1 = \grEsis$ and cofactors are ignored. DDH is hard in $\grE_1$ and $\grJ$.
+%AGM is used for $\ecE$ in Groth16 sections, or wherever is convenient. 
 
 \subsection{Non-Interactive Zero-Knowledge Arguments}
 %\label{subsec:zkp_background}
@@ -208,15 +239,18 @@ auxiliary inputs as defined in~\cite{bening_auxiliary}.
 
 % REMARKS:  Removed excessive notation $\approx$.
 
-\begin{definition}[Commitment Scheme]
-	$ \com $ consists of the algorithms:
-	\begin{itemize}
-		\item $ \com.\commit(x) \mapsto c,r$ outputs a commitment $ c $ to $ x $ and  an opening $ r $.
-		\item $ \com.\open(c;x,r)  \mapsto x'$ opens the commitment $ c $ with the openings $ x,r$ to $ x' $. 
-	\end{itemize}
-\end{definition}
+%\begin{definition}[Commitment Scheme]
+%	$ \com $ consists of the algorithms:
+%	\begin{itemize}
+%		\item $ \com.\commit(x) \mapsto c,r$ outputs a commitment $ c $ to $ x $ and  an opening $ r $.
+%		\item $ \com.\open(c;x,r)  \mapsto x'$ opens the commitment $ c $ with the openings $ x,r$ to $ x' $. 
+%	\end{itemize}
+%\end{definition}
+%
+%If $ \com $ is a deterministic commitment scheme, ignore $ r $.
 
-If $ \com $ is a deterministic commitment scheme, we ignore $ r $.
+
+
 
 
 
