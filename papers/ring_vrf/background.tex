@@ -1,4 +1,4 @@
-% !TEX root = crypto.tex
+% !TEX root = main.tex
 
 \newcommand{\com}{\mathsf{Com}}
 \newcommand{\open}{\mathsf{Open}}
@@ -25,6 +25,7 @@ Let $y \leftsample A(x)$
 denote $y \gets A(x;\omega)$ for a uniformly random $\omega$.
 %The set of values that have non-zero probability of being output by $A$ on input $x$ is denoted by $[A(x)]$.
 
+\begin{comment}
 \begin{definition}[Commitment Scheme] A commitment scheme $ \com$ over message space $\mathcal{M}$, opening space $\mathcal{T}$, and commitment space $\mathcal{C}$, consists of the following polynomial-time algorithms:	
 \begin{itemize}
 \item$ \pp_{\mathsf{cm}} \gets \com.\mathsf{Setup}(\secparam)$: Setup is a probabilistic algorithm which takes as input the security parameter $1^\kappa$ and outputs the set of public parameters $\pp_{\mathsf{cm}}$.
@@ -36,6 +37,8 @@ denote $y \gets A(x;\omega)$ for a uniformly random $\omega$.
 \end{definition}
 
 Informally, the primary security requirements for a commitment scheme are \emph{correctness}, \emph{hiding}, and \emph{binding}. Correctness ensures that correctly generated commitments pass the verification phase. The hiding property guarantees that the commitment does not reveal any information about the hidden value, while binding ensures that a committer cannot open a commitment to two distinct messages.
+\end{comment}
+
 
 
 %\liz{Rework Prelims.} We  give definitions of some  primitives that help us to construct our protocols.

@@ -102,21 +102,28 @@
 
 \input{pedersen_vrf}
 \input{uc_simulation}
-\input{zk_cont}
 
 \input{conclusion}
+
+
+
+
 %\input{app_short}
 
 \bibliographystyle{plain}
 \bibliography{../climate,../commit,../anoncred,../sassafras,../identity,../vrf,../zkp,../ringsignatures}
 
-\appendix
+\appendix 
+
+%\input{uc_simulation_proof} % Liz: commenting out for SAC submission due to page limit
+\input{zk_cont}
+\input{deployment}
 
 %\input{uc_fun} % Liz: moved to body rather than separated parts there
-\input{uc_proof}
-\input{nizkR_security}
+%\input{uc_proof} % Liz: commenting out for SAC submission due to page limit
+%\input{nizkR_security} % Liz: commenting out for SAC submission due to page limit
 \eprint{\input{more_uc_funcs}}{}
-\input{appendix_SpeciaG_inst}
+%\input{appendix_SpeciaG_inst}
 
 \end{document}
 
