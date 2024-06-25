@@ -1,0 +1,145 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+% \usepackage{dingbat}
+\usepackage{twemojis}
+\usepackage{xspace}
+
+\input{../../papers/macros/style.tex}
+\input{../../papers/macros/primitives.tex}
+
+\def\comring{\ensuremath{\mathsf{comring}}\xspace}
+\def\compk{\ensuremath{\mathsf{compk}}\xspace}
+
+
+\title{Zero-knowledge proof remarks}
+
+\author{Jeffrey Burdges}
+\date{20 June 2024}
+
+
+
+\begin{document}
+
+\maketitle
+
+
+
+
+\begin{frame}
+
+Relation: \quad $\mathcal{R}( \mathsf{inputs} ; \mathsf{witnesses} )$ \\ \bigskip
+
+NP = Non-deterministic polynomial time \\ \smallskip
+\hspace{15pt}  = Polynomial-time checkable \\ \bigskip
+
+Zero-knowledge means hiding the witnesses.
+
+\end{frame}
+
+
+
+\begin{frame}{Zero-knowledge proofs}
+
+% \begin{center} {\bf Zero-knowledge proofs} \end{center} \\ \bigskip
+
+Statement: \quad $\mathcal{R}( \mathsf{inputs} ; \ldots )$ \\ \bigskip
+
+Completeness: If true, honest provers convince honest verifiers. \\ \medskip
+
+Soundness: If false, an honest verifier cannot be convinced by
+ some cheating prover, except with negligible probability. \\ \medskip
+
+Zero-knowledge: No verifier learns anything other than
+ that the statement is true.
+
+\bigskip\bigskip
+
+SNARK = Succinct Non-interactive ARgument of Knowledge \\
+
+        
+\end{frame}
+
+
+
+\begin{frame}
+
+{\bf zkSNARK step 1.}  Find a ``good'' NP arithmetisation \\ \bigskip
+
+
+$$ \mathcal{R}( \mathsf{public\_inputs} ; \mathsf{witnesses} ) $$
+
+\smallskip
+
+Quadratic arithmatic program / rank-one constraint system
+
+\medskip
+
+\begin{center} $x^T A x + c^T x = 0$ \end{center}
+
+\bigskip
+
+Example: $b$ is a boolean means $b (1-b) = 0$
+
+\bigskip\bigskip\bigskip
+
+{\color{red} Radically different performance!}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+{\bf zkSNARK step 2.}  Build an information-theoretic proof system \\ \bigskip
+
+Express satisfaction of constraints by a polynomial division 
+
+\bigskip\bigskip
+
+Groth16 \url{https://eprint.iacr.org/2016/260} page 9 \\
+
+\end{frame}
+
+
+
+\begin{frame}
+
+{\bf zkSNARK step 3.}  Optimize using ``efficient'' cryptographic assumptions \\ \bigskip
+
+- Random oracle model (ROM) \\ \smallskip
+- Structured/common reference string (SRS/CRS)  \\
+\hspace{10pt}  aka trusted setup \\
+
+\bigskip\bigskip\bigskip
+
+{\color{red} Radically different performance!}
+
+\bigskip\bigskip
+
+{\small \url{https://www.di.ens.fr/~nitulesc/files/Survey-SNARKs.pdf}}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+
+``At present, zk roll up provers  cost 1 to 100 million times the cost of a single verifier'' \\ \smallskip
+- Justin Thaler (a16z)
+
+\bigskip\bigskip\bigskip
+
+Merkle tree of $2^{30}$ elements \\
+
+$$ \begin{matrix}
+\mathsf{8Posideon128} & 4050 & \\
+\mathsf{\ \ \ \ Pedersen} & 41400 & 10x \\
+\mathsf{\ \ \ \ \ \ \ SHA256} & 826020 & 204x \\
+\mathsf{\ \ \ \ \ \ \ Blake2s} & 630180 & 156x \\
+\end{matrix} $$
+
+\end{frame}
+
+\end{document}

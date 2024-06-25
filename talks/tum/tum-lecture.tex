@@ -26,82 +26,10 @@
 \maketitle
 
 
-\begin{frame}{Zero-knowledge in substrate?}
-
-Yes WASM works, but 10x slower for some optimized code.
-
-\bigskip \bigskip
-
-EIP-2537 (BLS12-381) adds 9 precompiles (hostcalls).  
-{\Large\twemoji{thumbs down}}
-% \includegraphics[width=0.03\textwidth]{../images/thumbs_down.png}
-\\ \medskip
-
-\only<1>{
-\hspace{5pt} Extra complexity means fewer curves \\
-\hspace{10pt}- Addition \& hash-to-curve appear unecessary. \\ \medskip
-
-\hspace{5pt} Inflexibility yields worse performance  \\ 
-\hspace{10pt}- Groth16 needs 4 pairings \\
-\hspace{10pt}- Batch verifiers \\
-\hspace{10pt}- Large parameters like KZG trusted setups \\
-}
-\bigskip\bigskip
-\only<2>{
-Add hostcalls for the "slow parts" but use WASM elsewhere
-{\Large\twemoji{thumbs up}}
-% \includegraphics[width=0.03\textwidth]{../images/thumbs_up.png}
-\\ \smallskip
-
-\hspace{5pt} Bandersnatch, etc. --- single \& multi-scalar multiplication \\
-
-\hspace{5pt} BLS12-381, BLS12-377, BW6-761, BW6-767, BN254 --- \\
-\hspace{10pt}  Same, plus multi-miller loop \& final exponentiation \\ \smallskip
-}
-
-\bigskip \bigskip 
-
-\url{https://github.com/paritytech/arkworks-extensions}
-\end{frame}
-
-
-\begin{frame}
-
-Arkworks \& others mostly descend from Zcash. \\ \smallskip
-
-Adapt crates directly, without reimplementation.
-
-\smallskip
-
-\includegraphics[width=0.9\textwidth]{../images/use_curves.png}
-
-\url{https://github.com/paritytech/arkworks-extensions}
-
-\end{frame}
-
-
 
 % \end{frame}
 % \bigskip % \bigskip
 % \begin{frame}
-
-
-
-\begin{frame}
-	
-Ring signatures prove the actual signer exists in \\
-\hspace{10pt} some publicly specified list, known as the ring.
-
-\bigskip\bigskip
-
-Examples:  Some ``deniable'' key exchanges, Monero, ZCash, etc.
-
-\bigskip\bigskip
-
-Ring can be a fancy set commitment like ZCash, \\
-\hspace{10pt} but membership proofs are always very expensive.
-	
-\end{frame}
 
 
 
@@ -127,11 +55,114 @@ s \, G &== c \, \pk + R \\
 
 \begin{frame}
 
+VRFs turn public randomness into secret deterministic randomness.
+
+\bigskip\bigskip
+
+Randomness from commit, reveal, reveal, reveal, .. \\ \medskip
+
+Set $\msg = H(\mathtt{start},\pk_1,\pk_2,\ldots) \doubleplus \mathtt{turn}$.  \\
+Each $i$ publishes $\sigma_i = \mathsf{ECVRF}.\Sign(\msg,\sk_i)$ \\
+Use hash returned by $\mathsf{ECVRF}.\Verify(\msg,\pk,\sigma_i)$ \\
+
+\bigskip\bigskip
+
+Threshold VRFs would permit some defectors, \\
+\hspace{10pt}   but weaker against collusion.
+
+\end{frame}
+
+
+
+\begin{frame}
+
+VRFs permit sampling with replacement, aka infinite deck games.
+
+\bigskip\bigskip
+
+Draw protocol: \\ \medskip
+
+Assign some $n_i$ draws to player $i$ \\
+Find fresh randomness $r$ for the draw. \\
+Log $(i,r,1),\ldots,(i,r,n_i)$ \\ % if player $i$ has $n_i$ draws
+$j$th draw by player $i$ is $\mathsf{ECVRF}.\Verify(r \doubleplus j,\pk_i,\ldots) \bmod |\mathtt{deck}|$ \\
+
+\bigskip\bigskip
+
+Play protocol: \\ \medskip
+
+Publish $\sigma = \mathsf{ECVRF}.\Sign(r \doubleplus j,\pk_i,\sk_i)$ \\
+or verify $\mathsf{ECVRF}.\Verify(r \doubleplus j,\pk_i,\sigma)$ \\
+Remove $(i,r,j)$ from the log.
+
+\end{frame}
+
+
+
+\begin{frame}{Ring signatures}
+
+Ring signatures prove the actual signer exists in \\
+\hspace{10pt} some specified list, known as the ring.
+
+\bigskip\bigskip
+
+Examples: \\
+- Some ``deniable'' key exchanges (ugh!). \\
+- ZCash \& Monero anonymize payments using ring signatures, \\
+\hspace{10pt} avoid double spending using a public log, like eCash.
+
+\end{frame}
+
+
+
+\begin{frame}
+
+``Ring'' describes the early linear-time constructions, \\
+\hspace{10pt} but now seems anachronistic.
+
+\bigskip\bigskip
+
+SNARKs permit log-time fancy set commitments, \\
+\hspace{10pt} but membership proofs are always very expensive.
+
+\bigskip\bigskip
+
+$\CommitRing(\ring, \pk_i^?)  \rightarrow (\comring, \openring^?)$ \\
+$\Sign(\sk_i, \comring,\openring, \msg)\rightarrow \sigma$ \\
+$\Verify(\comring,\msg,\sigma) \rightarrow  b$
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Anonymous credentials are broader than just ring signatures, \\
+\hspace{10pt} like blind signatures ala GNU Taler.
+
+\bigskip\bigskip
+
+They classically avoided the expensive membership proofs by \\
+\hspace{10pt}  using some bespoke reblindable certificate scheme. \\
+\hspace{10pt}  issued by some authority. 
+
+\bigskip\bigskip
+
+Group signatures permit master issuer to deanonymize signatures. \\
+- Good = Message delivery in Pond by Adam Langely(agl) \\
+- Bad = Government identity documents, money, etc.
+
+\end{frame}
+
+
+
+\begin{frame}
+
 Ring VRF is a ring signature that's also a VRF.
 
 \bigskip\bigskip 
 
-A ring verifiable random function (ring VRF) is a ring signature that proves evaluation of a pseudo-random function (PRF) determined by the actual key pair.
+A ring verifiable random function (ring VRF) is a ring signature that proves evaluation of a pseudo-random function (PRF) determined by the signer's actual key pair.
 
 \end{frame}
 
@@ -158,6 +189,29 @@ For what do you use a ring VRF?
             \frame{\includegraphics[width=.9\textwidth]{../images/white_FRONT117.png}} % {CAC/PNGs-to-print/individual-cards/black_FRONT050.png}
     \end{column}
 \end{columns}
+
+\bigskip\bigskip
+
+\url{https://github.com/CardsAgainstBlockchain/}
+
+\end{frame}
+
+
+\begin{frame}
+
+Cards Against Humanity needs two messages!
+
+\bigskip
+
+Fresh randomness $r$. \\
+Set $\mathtt{msgId} = r \doubleplus ``nullifier''$. \\
+Set $\mathtt{msgPlay} = r \doubleplus j$ for $j \in \{1,\ldots,5\}$. \\
+Publish $\sigma = \mathsf{ECVRF}.\Sign(\mathtt{msgId},\mathtt{msgPlay},\sk_i)$ \\
+or verify $\mathsf{ECVRF}.\Verify(\mathtt{msgId},\mathtt{msgPlay},\pk_i,\sigma)$ \\
+
+\bigskip\bigskip
+
+Always expect more ``glue'' when hiding anything, ala privacy, etc.
 
 \end{frame}
 
@@ -188,6 +242,19 @@ Just EC VRF except for $\color{red} t, b$ and $\pk$ being $\compk$.
 
 
 \begin{frame}
+
+Fast Ring VRFs: \\ \smallskip
+
+1. Produce a fresh Pedersen commitment to the secret key \\
+2. Some zk-SNARK proves its associated public key lies in the ring \\
+3. $\mathsf{PedersenVRF}$ proves the VRF evaluation(s) and \\
+\hspace{10pt}  proves knowledge of the Pedersen commitment. \\
+
+\end{frame}
+
+
+
+\begin{frame}
 	
 Zero-knowledge continuations..
 	
@@ -202,17 +269,28 @@ A: Ones we reuse without reproving.
 \end{frame}
 
 
+
 \begin{frame}[t] % {Zero-knowledge continuations}
 
 $\mathsf{Groth16}.\Verify(X,(A,B,C))$
 
 $$ e(A,B) = e([\alpha]_1, [\beta]_2) \cdot e(X, [\gamma]_2) \cdot e(C, [\delta]_2) $$
 
-\pause\medskip
+\medskip
 
 $$ \begin{aligned}
  X &= \sk \, G + \comring \, L \\
 \end{aligned} $$
+
+\only<1>{
+\bigskip
+
+$\alpha,\beta,\gamma,\delta$ are toxic waste from circuit specific trusted setup \\ \smallskip
+
+\bigskip\bigskip
+
+\url{https://eprint.iacr.org/2016/260}
+}\pause
 
 \vspace{-10pt}
 $$ \mathsf{Groth16} \Setst{ \sk, \comring \vphantom{\big|} }{
@@ -223,7 +301,7 @@ $$ \mathsf{Groth16} \Setst{ \sk, \comring \vphantom{\big|} }{
 %    \exists d,o \textrm{\ s.t.\ } \mathsf{Posideon}(sk,d) \in_o \comring 
 } $$
 
-\pause\bigskip\bigskip\bigskip 
+\bigskip\bigskip\bigskip 
 
 % \hspace{10pt}
 {\it Special(ized) G(roth16) means inner Groth16 leaks secrets, but..}
@@ -278,9 +356,7 @@ C' &:= C + r_2 A + {\color{red} b\, K_\delta} \\
 
 \bigskip\medskip
 
-Avoid the Groth16 side channel and use CDH over Posideon.. \\ \smallskip
-
-\bigskip\medskip
+ZKC0.\  Avoid Groth16 side channel and CDH v Posideon \\ \medskip
 
 $$ X = \sk \, G + b \, K + J_\pk.x \, L_x + J_\pk.y \, L_y $$
 
@@ -292,14 +368,30 @@ $$ \mathsf{Groth16} \Setst{ \sk_0 + \sk_1 2^{128}, J_\pk }{
 
 \smallskip
 
-Use with hidden KZG opening of $J_\pk$ like Caulk/Caulk+
+Employ a hidden KZG opening of $J_\pk$ like Caulk/Caulk+
 
 \end{frame}
 
 
+
 \begin{frame} % {Zero-knowledge continuations}
 
-Revokation could be done using a ``cuckoo filter'' in a KZG.
+ZKC1.\  Do only $\log n$ ring updates  \\ \bigskip
+
+Above $\comring$ is the root of a Merkle tree, \\
+\hspace{5pt}  so changing the ring requires everyone reprove. \\ \medskip
+
+Instead place $\comring$ into a ``Merkle mountian range.'' \\ \medskip
+
+Employ some hidden KZG opening of $comring$ like Caulk/Caulk+
+
+\end{frame}
+
+
+
+\begin{frame} % {Zero-knowledge continuations}
+
+AKC2.\  Revokation could be done using a ``cuckoo filter'' in a KZG.  \\ \bigskip
 
 $$ \mathsf{Groth16} \Setst{ \sk, \pk, i_1, i_2, i_3, \comring \vphantom{\big|} }{
 \begin{aligned}
@@ -320,11 +412,11 @@ Non-revokation proof:  $\pk \neq f(i_j)$ for $j=1,2,3$ where $f$ is a KZG
 
 \begin{frame} % {Identity}
 	
-Q: How can identity be safe for online use?
+Q: What makes identity safe for online usage?
 
 \bigskip
 
-A: By revealing nothing except users' uniqueness.
+A: By revealing nothing except users' uniqueness. \quad  (Bryan Ford)
 
 \bigskip\bigskip
 
@@ -336,7 +428,24 @@ A: By revealing nothing except users' uniqueness.
 
 \begin{frame} % {Identity}
 
-Attribute credentials signed by authority.
+Attribute based credentials  \\ \bigskip
+
+Issuance protocol between user \& authorty \\
+\hspace{10pt} creates a special certificate over some features \\ \medskip
+
+Show aka signing, but only partially reveals selected feature,  \\
+\hspace{10pt} or only proves facts about them like over 18.
+
+\bigskip\bigskip
+
+
+\end{frame}
+
+
+
+\begin{frame} % {Identity}
+
+Attribute based credentials % signed by authority
 
 \bigskip\smallskip
 
@@ -455,6 +564,59 @@ A: By asking users trust a public list of residents, not certificates.
 
 \begin{frame}
 
+Leaders benefit distributed systems \\ \bigskip\bigskip
+
+Round robin works, but vulneralbe to censorship, etc. \\ \bigskip
+
+Bitcoin is purely leader election, but stupid.. \\
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Oroborous Praos \\ \bigskip\bigskip
+
+\def\out{\mathsf{out}}
+Production: \\ \smallskip
+
+$\aux := H(\mathsf{block})$. \\
+$\msg := r_{e-1} \doubleplus t$ at time $t$. \\
+$\sigma := \mathsf{ECVRF}.\Sign(\msg,\aux,\pk_i,\sk_i)$. \\
+If $\out = \mathsf{ECVRF}.\Verify(\msg,\aux,\pk_i,\sigma)$ small then  \\
+\hspace{10pt} publish $(t,\mathsf{block},\sigma)$. \\
+
+\bigskip\bigskip
+
+Validation: \\ \smallskip
+
+Abort unless time is roughly $t$, $\mathsf{block}$ verifies, and \\
+\hspace{10pt} $\out := \mathsf{ECVRF}.\Verify(\msg,\pk_i,\sigma)$ is small. \\
+Set $r_{e+1} := H(r_{e+1} \doubleplus \out)$.
+
+
+
+\end{frame}
+
+
+
+\begin{frame}
+
+{\bf Problem:}  Praos has huge opertunity costs, poor workflow, etc.
+
+\bigskip\bigskip
+
+Secret single leader election (SSLE) means \\ \medskip
+\hspace{5pt} new leader every block, only a few seconds appart, and \\ \smallskip
+\hspace{5pt} upcoming honest leaders unknown by adversaries
+
+\end{frame}
+
+
+
+\begin{frame}
+
 Sassafras: Semi-anonymous sortition of staked assignees \\
 \hspace{5pt} for fixed-time rhythmic assignment of slots
 
@@ -511,7 +673,83 @@ Advantages: \\ \smallskip
 
 
 
+
+
+
+
+
+
+
+\begin{frame}{Zero-knowledge in substrate?}
+
+Yes WASM works, but 10x slower for some optimized code.
+
+\bigskip \bigskip
+
+EIP-2537 (BLS12-381) adds 9 precompiles (hostcalls).  
+{\Large\twemoji{thumbs down}}
+% \includegraphics[width=0.03\textwidth]{../images/thumbs_down.png}
+\\ \medskip
+
+\only<1>{
+\hspace{5pt} Extra complexity means fewer curves \\
+\hspace{10pt}- Addition \& hash-to-curve appear unecessary. \\ \medskip
+
+\hspace{5pt} Inflexibility yields worse performance  \\ 
+\hspace{10pt}- Groth16 needs 4 pairings \\
+\hspace{10pt}- Batch verifiers \\
+\hspace{10pt}- Large parameters like KZG trusted setups \\
+}
+\bigskip\bigskip
+\only<2>{
+Add hostcalls for the "slow parts" but use WASM elsewhere
+{\Large\twemoji{thumbs up}}
+% \includegraphics[width=0.03\textwidth]{../images/thumbs_up.png}
+\\ \smallskip
+
+\hspace{5pt} Bandersnatch, etc. --- single \& multi-scalar multiplication \\
+
+\hspace{5pt} BLS12-381, BLS12-377, BW6-761, BW6-767, BN254 --- \\
+\hspace{10pt}  Same, plus multi-miller loop \& final exponentiation \\ \smallskip
+}
+
+\bigskip \bigskip 
+
+\url{https://github.com/paritytech/arkworks-extensions}
+\end{frame}
+
+
+\begin{frame}
+
+Arkworks \& others mostly descend from Zcash. \\ \smallskip
+
+Adapt crates directly, without reimplementation.
+
+\smallskip
+
+\includegraphics[width=0.9\textwidth]{../images/use_curves.png}
+
+\url{https://github.com/paritytech/arkworks-extensions}
+
+\end{frame}
+
+
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

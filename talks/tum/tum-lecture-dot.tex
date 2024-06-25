@@ -1,0 +1,283 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+% \usepackage{dingbat}
+\usepackage{twemojis}
+\usepackage{xspace}
+
+\input{../../papers/macros/style.tex}
+\input{../../papers/macros/primitives.tex}
+
+\usepackage{tikz}
+
+\newcommand{\shrug}[1][]{%
+\begin{tikzpicture}[baseline,x=0.8\ht\strutbox,y=0.8\ht\strutbox,line width=0.125ex,#1]
+\def\arm{(-2.5,0.95) to (-2,0.95) (-1.9,1) to (-1.5,0) (-1.35,0) to (-0.8,0)};
+\draw \arm;
+\draw[xscale=-1] \arm;
+\def\headpart{(0.6,0) arc[start angle=-40, end angle=40,x radius=0.6,y radius=0.8]};
+\draw \headpart;
+\draw[xscale=-1] \headpart;
+\def\eye{(-0.075,0.15) .. controls (0.02,0) .. (0.075,-0.15)};
+\draw[shift={(-0.3,0.8)}] \eye;
+\draw[shift={(0,0.85)}] \eye;
+% draw mouth
+\draw (-0.1,0.2) to [out=15,in=-100] (0.4,0.95); 
+\end{tikzpicture}}
+
+
+\def\comring{\ensuremath{\mathsf{comring}}\xspace}
+\def\compk{\ensuremath{\mathsf{compk}}\xspace}
+
+
+\title{Polakdot / Machine elves}
+
+\author{Jeffrey Burdges}
+\date{20 June 2024}
+
+
+
+\begin{document}
+
+\maketitle
+
+
+
+\begin{frame}
+
+Ignore the stupid inefficencies in blockchains \\ \medskip
+\hspace{10pt} Proof-of-work \\
+\hspace{10pt} Irregular leader ellections in Praos \\
+\hspace{10pt} Radix 16 hashing in ETH \\
+\hspace{10pt} Bad VMs and scripting \\
+\hspace{10pt} Memepools \\
+\hspace{10pt} Not batch verifying \\
+
+\pause\bigskip\bigskip
+
+Ignore most harder inefficencies too \\ \medskip
+\hspace{10pt} Mass replication \\
+\hspace{10pt} Metered execution aka gas \\
+\hspace{10pt} Single threaded execution \\
+\hspace{10pt} Deterministic execution \\
+
+\end{frame}
+
+
+
+\begin{frame}
+
+All of web2 requires ``sharding'' aka horizontal data partitioning \\ \medskip
+
+\hspace{10pt} because services grow beyond what any one machine can do.
+
+\pause\bigskip\bigskip\bigskip
+
+Blockchains inherently simulate a single machine!
+
+\pause\bigskip\bigskip\bigskip
+
+Are blockchains only tools for costly services like finance?
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Idea:\  Cryptographic proof aka zk roll ups \\ \bigskip
+
+All blocks have some succinct-ish cryptographic proof
+
+\bigskip\bigskip
+
+Advantage:  Weaker assumptions, but exactly what depends. \\ \smallskip
+
+\bigskip\bigskip
+
+Advantage:  Recursive in theory.  And composible. \\ \medskip
+
+\hspace{10pt} Many shards in one block \\ \smallskip
+\hspace{10pt} Verify ancestry ala Mina  \\
+
+\bigskip\bigskip
+
+Disadvantage: Interchain latency in hours
+
+\end{frame}
+
+
+
+\begin{frame}
+
+``At present, zk roll up provers cost 1 to 100 million times the cost of a single verifier'' \\ \smallskip
+- Justin Thaler (a16z)
+
+\bigskip\bigskip
+
+ETH pays almost 1 million nodes, so bandwidth effective there, \\ \medskip 
+
+\hspace{10pt} But over paying one million fold !?! \\ \smallskip
+\hspace{10pt} And elsewhere?
+
+\pause\bigskip\bigskip
+
+Actually worse given opertunity costs of decentralized provers.  \\ \medskip 
+
+\hspace{10pt} And MEV becomes fatal here, but unavoidable.
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Idea:\  Concentration inequalities \\ \bigskip\bigskip
+
+Assume 80\% honest plus perfect-ish randomness plus $\cdots$  \\ \medskip
+
+Randomly assing 1000 validators to each shard \\ \medskip
+
+Argue 2/3rd honest on each shard using Chebyshev/Hoeffding \\ \medskip
+
+\hspace{5pt} Voila bridges become trustworthy 
+
+\bigskip\bigskip
+
+Advantage:  $1000 \ll 1,000,000$ but you pay bandwidth too.
+
+\bigskip\bigskip
+
+{\em OmniLedger: A Secure, Scale-Out, Decentralized Ledger via Sharding} by Bryan Ford's DEDIS group (EPFL)
+% Eleftherios Kokoris-Kogias, Philipp Jovanovic, Linus Gasser†, Nicolas Gailly†, Ewa Syta, Bryan Ford
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Idea:\  Concentration inequalities \\ \bigskip\bigskip
+
+Advantage:  Interchain latency in seconds or minutes, post-finality \\ \bigskip\bigskip
+
+Disadvantage: Non-recursive \\ \bigskip\bigskip
+
+\pause
+
+Pseudo-disadvantage: Nobody bothers \\ \medskip
+
+\hspace{5pt} Awful lot of professor coins mess up shard sizes, but.. 
+
+\end{frame}
+
+
+\begin{frame}
+
+Tool:  Availability commitment via erasure coding \\ \bigskip
+
+Who does provides? \quad  Who samples? \\ \bigskip\medskip
+
+Rateless codes -- Attacker merely solves HP hard problem \\
+\hspace{5pt}  Otherwise very fast \& very cool \\ \bigskip
+
+2d Reed-Solomn -- Attacker must hide 1/4th \\ \smallskip
+\hspace{5pt}  Allows partial reconstruction for $O(\sqrt{n})$ sized fraud proofs \\ \smallskip
+\hspace{5pt}  Off-chain \& you lots, or you $+$ \shrug \quad bandwidth?!? \\ \bigskip
+
+1d Reed-Solomn -- Attacker must hide 2/3rds \\ \smallskip
+\hspace{5pt}  Assume 2/3rd honest, so validators \& validators. \\ \smallskip
+\hspace{5pt}  All or nothing reconstruction, but allows batch verification 
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Idea:\  Optimistic roll ups \\ \bigskip\bigskip
+
+1. 2d Reed-Solomn availability \\ \medskip
+
+2. Erasure code blocks so someone could check them \\ \medskip
+
+3. Some randos magically appear and check \\ \smallskip
+
+\hspace{10pt} Why do they check?  \shrug \\ \medskip
+
+4. Attempt recovery if cheated \\ \bigskip\bigskip
+
+Disadvantage:  Interchain latency of a week 
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Idea: Byzantine ``cut n choose'' proof \\ \bigskip\bigskip
+
+Assume 2/3rd honest plus synchrony$\dag$ \\ \bigskip
+
+0. Make blocks state-less \\ \medskip
+
+1. At least one validator ``backs'' the block \\ \medskip
+
+2. Wait upon availability by 1d Reed-Solomn \\ \medskip
+
+3. Interchain messages sent optimistically \\ \medskip
+
+4. Validators self-assign using ELVES approval gadget \\ \medskip
+
+5. Revert chain if approval gadget rejects \\ \medskip
+
+6. Finality waits upon approval gadget \\ \medskip
+
+\end{frame}
+
+
+
+\begin{frame}
+
+Advantage:  Interchain latency of seconds, even pre-finality \\ \bigskip
+
+Advantage:  35-ish checkes, 29x cheaper than OmniLedger \\ \smallskip
+\hspace{10pt} 15 may be possible!
+
+\pause\bigskip\bigskip
+
+Disadvantage:  Complexity \\ \bigskip
+
+Disadvantage:  Soundness assumes 2/3rd honest plus synchrony$\dag$ \\ \bigskip
+
+Disadvantage:  Gossip is $O(n^2)$ bandwidth, \\ \smallskip
+\hspace{10pt} but 1000 works, so composes with OmniLedger \\ \bigskip
+
+\end{frame}
+
+
+
+\begin{frame}
+
+ELVES approval gadget: \\ \bigskip\bigskip
+
+Escalate to everyone if anyone disputes. \\ \medskip
+
+Tranche $t=0$.  Announce if core is $c_i$ for some $i$ where \\ \smallskip
+\hspace{10pt}  $(c_1,\ldots,c_k) \leftarrow \mathsf{VRF}(r) \bmod \mathtt{num\_cores}$ \\ \medskip
+
+Tranche $t>0$.  Announce if $t > t_c$ where \\ \smallskip
+\hspace{10pt}  $\mathtt{t_c} \leftarrow \mathsf{VRF}(r \doubleplus c) \bmod \mathtt{max\_delay}$  \\ \medskip
+
+Require enough tranche for 35 assignees, plus \\ \smallskip
+\hspace{5pt} one extra tranche for each assignee who ``no shows'' \\ \medskip
+
+\end{frame}
+
+
+
+
+
+\end{document}
+
+
