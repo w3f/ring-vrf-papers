@@ -118,8 +118,8 @@ $\mathit{input}$ and $B$ having access to the random coins of $A$. \\
 Hence, the proofs obtained via sequential use of $ \ZKCont_{\relone}.\Reprove $ as described above are not linkable, i.e., a property targeted  in the preamble of this section. }
 \liz{Where?}
 \\\\
-\noindent \textbf{Perfect Zero-knowledge w.r.t. $\relone$:} For all $\lambda$, for every benign auxiliary input $\realaux$, 
-for all  $(\bary, \barx; \baromega_1) \in \relone$, for all $X'$, for all $\pi'$, for all $b'$ there exists a PPT algorithm $ \Sim $ such that, for every adversary $\adv$:
+\noindent \textbf{Perfect Zero-knowledge w.r.t. $\relone$:} For all $\lambda$, for every benign auxiliary input $\realaux$, there exists a PPT algorithm $ \Sim $ such that 
+for all  $(\bary, \barx; \baromega_1) \in \relone$, for all $X'$, for all $\pi'$, for all $b'$ , for every adversary $\adv$:
 \begin{footnotesize}
 \begin{align*}
 & \Pr [\adv(\crs, \realaux, \pi, X, \relone) = 1 \ | \ (\crs, \tw, \pp) \leftarrow \ZKCont_{\relone}.\Setup (1^{\lambda}), 
