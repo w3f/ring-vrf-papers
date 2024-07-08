@@ -232,7 +232,7 @@ and $\bary = (x_1, \ldots, x_l)$.
 
 We remark that $ \SpecialG.\Verify $ corresponds to the verify algorithm of Groth16 zkSNARK when $ X $ is the output of $ \SpecialG.\Preprove$. 
 
-\item$\SpecialG.\Sim(\tw, \bary, \relRQ) \rightarrow (\pi, X)$: It samples $\tilde{x}, a, b \xleftarrow {\$} \F_p$ and let $\pi = (a\gone, b \gtwo , c\gone)$ where $c = \frac{ab - \alpha \beta - \sum_{i=1}^{l} x_i (\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau))- \tilde{x}}{\delta}  $ and, 
+\item$\SpecialG.\Sim(\tw, \bary, \relRQ) \rightarrow (\pi, X)$: It samples $\tilde{x}, a, b \xleftarrow {\$} \F_p$ and let $\pi = (a\gone, b \gtwo , \allowbreak c\gone)$ where $c = \frac{ab - \alpha \beta - \sum_{i=1}^{l} x_i (\beta a_i(\tau)+ \alpha b_i(\tau)+ c_i(\tau))- \tilde{x}}{\delta}  $ and, 
 by definition $\bary = (x_1, \ldots, x_l)$. Note that $\pi$ is a simulated proof for transparent input $\bary$ 
 and commitment $X = \tilde{x} \gone$.
 \end{itemize} 

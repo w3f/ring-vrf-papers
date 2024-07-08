@@ -385,7 +385,7 @@ After deciding $ b $, $ \fgvrf $ records it as $ [\msg, \aux, W,\ring,\sigma,b] 
 	
 	\begin{definition}[Anonymity of $ \Gen_{sign} $]\label{def:anonymity}
 		We define an anonymity game between a PPT distinguisher $ \mathcal{D} $ and a challenger.
-		In the game, $\mathcal{D}$ sends the query  $ (\oramsg{challenge}, \ring, (\sk_0,\pk_0), (\sk_1, \pk_1), \msg,\aux)$. Then the challenger checks if  $ \pk_0, \pk_1 \in \ring $. If it is the case, the challenger  samples $ b\in \{0,1\}  $ at random and runs $ \Gen_{sign}(\ring, \sk_b, \pk_b,\aux, \msg) \rightarrow \sigma_b $. It gives $ \sigma_b $ as a challenge to $ \mathcal{D} $. At the end of the game, if $ \mathcal{D} $ outputs $ b' = b $, then $\mathcal{D}$ wins the game.
+		In the game, $\mathcal{D}$ sends the query  $ (\oramsg{challenge}, \ring, (\sk_0,\pk_0), (\sk_1, \allowbreak \pk_1), \msg,\aux)$. Then the challenger checks if  $ \pk_0, \pk_1 \in \ring $. If it is the case, the challenger  samples $ b\in \{0,1\}  $ at random and runs $ \Gen_{sign}(\ring, \sk_b, \pk_b,\aux, \msg) \rightarrow \sigma_b $. It gives $ \sigma_b $ as a challenge to $ \mathcal{D} $. At the end of the game, if $ \mathcal{D} $ outputs $ b' = b $, then $\mathcal{D}$ wins the game.
 			
 		We say that $ \Gen_{sign} $ is anonymous  if any PPT distinguisher $ \mathcal{D} $ has a negligible advantage in $ \secparam $ to win the anonymity game.
 		%TODO Specify the sec param for the functionality
