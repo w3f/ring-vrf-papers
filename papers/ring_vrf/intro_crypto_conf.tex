@@ -23,20 +23,20 @@ In particular, the RSA Full Domain Hash VRF (RSA-FDH-VRF) and the Elliptic Curve
 \noindent \emph{Leader Election.} 
 A single leader election (SLE) is a way to elect one leader randomly among the
 parties in a distributed system. If the leader is secret (i.e., unpredictable), then it is called
-a secret single leader election (SSLE).
+a single secret leader election (SSLE).
 A single leader makes for an attractive target in real-world systems. Indeed, the leader may be malicious, or honest leaders may be targeted, e.g.,
 by denial-of-service (DoS) attacks. One solution is to frequently change the leader and
 to have a secret leader election protocol that hides the leader until they announce themself.
 A leader election mechanism is essential for blockchain protocols if the leader is
 the node who is eligible to publish a block.
-One election mechanism for blockchain protocols is proof-of-work, where a node, called a miner, is elected as a leader if it generates a block whose hash is less than a threshold. Some
+One election mechanism for blockchain protocols is proof of work, where a node, called a miner, is elected as a leader if it generates a block whose hash is less than a threshold. Some
 proof-of-stake (PoS) protocols \cite{DaianPS19,KiayiasRDO17,DavidGKR18,Dfinity} use a similar approach with respect to stake instead of computational power. Even though this election mechanism provides secrecy of
 the leader(s) and requires no communication with the other nodes, it has some drawbacks. In particular, the outcome is probabilistic since the leaders are selected in expectation
 with respect to their computational power or stake. Therefore, there can be multiple leaders or
 no leaders at all. If the election outcome has more than one leader, then the efforts of the leaders
 except one will be wasted because they are not aware of other leaders. If the election outcome has
 no leader, then the time to extend the blockchain will be wasted. Moreover,
-it has been shown by Azouvi and Cappelletti \cite{AzouviC21} that PoS protocols with secret single leader
+it has been shown by Azouvi and Cappelletti \cite{AzouviC21} that PoS protocols with single secret leader
 election (SSLE) provide higher security compared to probabilistic secret leader election (PLE).
 Therefore, it is preferable to have an election mechanism that selects only one leader to generate a
 block.
@@ -44,7 +44,7 @@ An SSLE scheme is said to be secure \cite{BonehEHG20} if it satisfies uniqueness
 \liz{Possibly say more on this, i.e., not leaking wealth.}
 
 ECVRF is a core primitive in the leader election mechanisms of PoS blockchains, such as Algorand \cite{ChenM19} and Cardano \cite{KiayiasRDO17,DavidGKR17}, which employ PLE, and Polkadot \cite{BurdgesASV23a}, which employs SSLE.
-RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs the could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
+RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
 %
 %For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. 
 %

@@ -1,42 +1,37 @@
 %\eprint{\documentclass[11pt,a4paper]{article}}
-\documentclass{llncs}
+%\documentclass{iacrcc}
 
-\def\eprint#1#2{#2} % crypto
-\eprint{\usepackage[margin=3cm,includefoot]{geometry}}{}
-% \sloppy
-\def\doublecolumn#1#2{#2}
+%\def\eprint#1#2{#2} % crypto
+%\eprint{\usepackage[margin=3cm,includefoot]{geometry}}{}
+%% \sloppy
+%\def\doublecolumn#1#2{#2}
 % \usepackage{amsthm}
-\usepackage{amsfonts}
-\usepackage{amsmath}
-\usepackage{mathtools}
-\usepackage{algorithm}
-
-\usepackage[noend]{algpseudocode}
-
-\usepackage[utf8]{inputenc}
-\usepackage{xspace}
-
-\usepackage{url}
-\usepackage{hyperref}
-% \usepackage[capitalize,nameinlink]{cleveref}
-
-% \usepackage{graphicx}
-% \usepackage{xcolor}
-
-% \usepackage{tikz}
-% \usetikzlibrary{arrows,chains,matrix,positioning,scopes}
-
-\usepackage{enumitem}
-% \setlist[itemize]{leftmargin=*}
-
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\@maketitle}% <cmd>
-{\end{center}}% <search>
-{\bigskip\small\@date
-\end{center}}% <replace>
-{}{}% <success><failure>
-\makeatother
+%\usepackage{amsfonts}
+%\usepackage{amsmath}
+%\usepackage{mathtools}
+%\usepackage{algorithm}
+%\usepackage[noend]{algpseudocode}
+%\usepackage[utf8]{inputenc}
+%\usepackage{xspace}
+%\usepackage{url}
+%\usepackage{hyperref}
+%% \usepackage[capitalize,nameinlink]{cleveref}
+%% \usepackage{graphicx}
+%% \usepackage{xcolor}
+%% \usepackage{tikz}
+%% \usetikzlibrary{arrows,chains,matrix,positioning,scopes}
+%\usepackage{enumitem}
+%% \setlist[itemize]{leftmargin=*}
+%\usepackage{etoolbox}
+%\makeatletter
+%\patchcmd{\@maketitle}% <cmd>
+%{\end{center}}% <search>
+%{\bigskip\small\@date
+%\end{center}}% <replace>
+%{}{}% <success><failure>
+%\makeatother
+%\usepackage{tcolorbox}
+%\tcbset{colback=white}
 
 % Italics should be prefered over underlines..
 % \usepackage{ulem}
@@ -47,6 +42,104 @@
 % \usepackage{tcolorbox}
 % ..but if required mdframe splits across pages.
 % \usepackage[linewidth=1pt]{mdframed}
+
+%% TODO: Clean up macros
+%\input{../macros/style.tex}
+%\input{../macros/primitives.tex}
+%\input{../macros/other.tex}
+%\input{macros.tex}
+%
+%% Liz macros
+%\newcommand{\liz}[1]{ { \color{magenta}  Liz:  #1 } }
+%
+%%\newcommand{\liz}[1]{}
+
+% \usepackage{todonotes}
+%\sloppy
+
+%\title{Ring Verifiable Random Functions}
+
+%\eprint{\author{Jeffrey Burdges\inst{1} \and Oana Ciobotaru\inst{2} \and Handan K{\i}l{\i}nç Alper\inst{1} \and Alistair Stewart\inst{1} \and Sergey Vasilyev\inst{1}}}{\author{}}
+% oana.ciobotaru@gmail.com for
+
+%\eprint{
+%	\institute{Web 3.0 Foundation
+%		\and
+%		OpenZeppelin}}{}
+
+%\eprint{\date{\today}}{\date{}}
+
+%\institute{}
+
+%\begin{document}
+%	
+%\maketitle
+%
+%\begin{abstract}
+%\input{abstracts/short}
+%\end{abstract}
+
+%%%%%%%%%%%
+
+%%% New IACR Journal Document Class / Formatting
+
+% IACR Communications CLASS DOCUMENTATION
+% Written by Joppe W. Bos and Kevin S. McCurley (2022-2024),
+% based on prior work on the iacrtrans class by
+% Gaetan Leurent gaetan.leurent@inria.fr (2016-2018).
+%
+% To the extent possible under law, the author(s) have dedicated all
+% copyright and related and neighboring rights to this software to the
+% public domain worldwide. This software is distributed without any
+% warranty.
+%
+% You should have received a copy of the CC0 Public Domain Dedication
+% along with this software. If not, see
+% <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7}
+\documentclass{iacrcc}
+\newcommand{\cmd}[2][]{%
+  \def\FirstArg{#1}
+  \ifx\FirstArg\empty
+    \texttt{\textbackslash{}#2}%
+  \else
+    \texttt{\textbackslash{}#2\{#1\}}%
+  \fi
+}
+
+\def\eprint#1#2{#2} % crypto
+\eprint{\usepackage[margin=3cm,includefoot]{geometry}}{}
+% \sloppy
+\def\doublecolumn#1#2{#2}
+
+% \usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage[utf8]{inputenc}
+\usepackage{xspace}
+\usepackage{url}
+%\usepackage{hyperref} % Liz: clashes with new IACR formatting
+% \usepackage[capitalize,nameinlink]{cleveref}
+% \usepackage{graphicx}
+% \usepackage{xcolor}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows,chains,matrix,positioning,scopes}
+\usepackage{enumitem}
+% \setlist[itemize]{leftmargin=*}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@maketitle}% <cmd>
+{\end{center}}% <search>
+{\bigskip\small\@date
+\end{center}}% <replace>
+{}{}% <success><failure>
+\makeatother
+\usepackage{tcolorbox}
+\tcbset{colback=white}
 
 % TODO: Clean up macros
 \input{../macros/style.tex}
@@ -59,33 +152,91 @@
 
 \newcommand{\liz}[1]{}
 
-\usepackage{tcolorbox}
-\tcbset{colback=white}
+% Borrowed from btxdoc.tex
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
-% \usepackage{todonotes}
-\sloppy
+\def\BibLaTeX{Bib\LaTeX}
 
-\title{Ring Verifiable Random Functions}
+\title[running  = {Ring Verifiable Random Functions},
+       %subtitle = {iacrcc LaTeX Class Documentation (v0.70)}
+      ]{Ring Verifiable Random Functions}
 
-\eprint{\author{Jeffrey Burdges\inst{1} \and Oana Ciobotaru\inst{2} \and Handan K{\i}l{\i}nç Alper\inst{1} \and Alistair Stewart\inst{1} \and Sergey Vasilyev\inst{1}}}{\author{}}
-% oana.ciobotaru@gmail.com for
+%\genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
 
-\eprint{
-	\institute{Web 3.0 Foundation
-		\and
-		OpenZeppelin}}{}
+\authorrunning{J. Burdges, O. Ciobotaru, E. Crites, H. Kılınç Alper, A. Stewart, and S. Vasilyev}
 
-\eprint{\date{\today}}{\date{}}
+\addauthor[
+%orcid   = { },
+           inst    = {1},
+	   email   = {jeff@web3.foundation},
+	   surname = {Burdges}
+          ]{Jeffrey Burdges}
+\addauthor[
+%orcid   = { },
+           inst    = {2},
+           email   = {oana.ciobotaru@gmail.com},
+	   surname = {Ciobotaru}
+          ]{Oana Ciobotaru}
+\addauthor[orcid   = {0000-0001-9992-1771},
+           inst    = {1},
+           %onclick = {https://elizabeth-crites.github.io/},
+           email   = {elizabeth@web3.foundation},
+	   surname = {Crites}
+          ]{Elizabeth Crites}
+\addauthor[orcid   = {0000-0002-1497-5517},
+           inst    = {3},
+           email   = {handankilinc1@gmail.com},
+	   surname = {Kılınç Alper}
+          ]{Handan Kılınç Alper}
+\addauthor[orcid   = {0000-0003-4886-1056},
+           inst    = {1},
+           email   = {alistair@web3.foundation},
+	   surname = {Stewart}
+          ]{Alistair Stewart}
+\addauthor[
+%orcid   = {},
+           inst    = {1},
+           email   = {sergey@web3.foundation},
+	   surname = {Vasilyev}
+          ]{Sergey Vasilyev}
+          
+\addaffiliation[ror      = {031v4g827},
+                street   = {Baarerstrasse 14},
+                %city     = {Zug},
+                postcode = {6300},
+                %country  = {Switzerland}
+               ]{Web3 Foundation}
+\addaffiliation[
+%country={United Kingdom}
+]
+{OpenZeppelin}
+\addaffiliation[
+%country={Switzerland}
+]
+{Self}
+\date{ }
 
-\institute{}
+\license{CC-by}
 
 \begin{document}
-	
+
 \maketitle
 
+\keywords[Verifiable Random Functions, Ring Signatures]{Verifiable Random Functions, Ring Signatures}
+
 \begin{abstract}
-\input{abstracts/short}
+  \input{abstracts/short}
 \end{abstract}
+
+\begin{textabstract}
+  This document is a quick introduction to the iacrcc.cls
+  LaTex class for the IACR Communications in Cryptology.
+\end{textabstract}
+
+
+
+%%%%%%%%%%%
 
 
 %\input{intro}
@@ -102,7 +253,7 @@
 
 \input{pedersen_vrf}
 \input{uc_simulation}
-
+\input{zk_cont}
 \input{conclusion}
 
 
@@ -110,13 +261,12 @@
 
 %\input{app_short}
 
-\bibliographystyle{plain}
+%\bibliographystyle{plain}
 \bibliography{../climate,../commit,../anoncred,../sassafras,../identity,../vrf,../zkp,../ringsignatures}
 
 \appendix 
 
 %\input{uc_simulation_proof} % Liz: commenting out for SAC submission due to page limit
-\input{zk_cont}
 \input{deployment}
 
 %\input{uc_fun} % Liz: moved to body rather than separated parts there

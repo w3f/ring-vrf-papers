@@ -1,0 +1,124 @@
+\begin{lemma}\label{lemma:sets}
+Let A be a finite set of size $n$, and let $B_1 \subseteq A, B_2 \subseteq A$ be independent, randomly chosen subsets such that $\lvert B_1 \rvert = \lvert B_2 \rvert = f$.
+Let $\Pr[k]$ denote the probability that the union $B_1 \cup B_2$ is of size exactly $k$ for $0 \leq k \leq n$. Then:
+
+   \begin{equation}\label{eqn:Pr}
+\Pr[k] =
+    \begin{cases}
+      \frac{\binom{n}{k} \binom{k}{f} \binom{f}{2f - k}}{\binom{n}{f}^2}, & \text{if}\ f \leq k \leq \min\{n, 2f\} \\
+      0, & \text{otherwise}
+    \end{cases}
+  \end{equation}
+
+\end{lemma}
+
+\begin{proof}
+
+\begin{align}
+\Pr[k] = \frac{\#~\text{of ways of choosing $B_1, B_2$ s.t. $\lvert B_1 \cup B_2 \rvert = k$}}{\#~\text{of ways of choosing $B_1, B_2$}}
+\end{align}
+
+There are $\binom{n}{k}$ ways to pick a set $U := B_1 \cup B_2$ of size $k$.
+We can first pick $B_1$ arbitrarily from $U$.  There are $\binom{k}{f}$ ways to do this.
+We have fewer degrees of freedom for selecting $B_2$.
+We must pick $B_2$ in such a way that it has $f$ elements and its union with $B_1$ has exactly $k$ elements.
+Since $\lvert B_1 \cup B_2 \rvert = \lvert B_1 \rvert + \lvert B_2 \rvert - \lvert B_1 \cap B_2 \rvert$ and we must have that $\lvert B_1 \cup B_2 \rvert = k$ and $\lvert B_1 \rvert = \lvert B_2 \rvert = f$,
+then $\lvert B_1 \cap B_2 \rvert = f + f - k$.  There are $\binom{f}{2f-k}$ ways to choose these intersected elements from $B_1$.
+Finally, for the denominator, there are $\binom{n}{f}$ ways to choose $B_1$ of size $f$ and the same for $B_2$.
+This gives~\cref{eqn:Pr}.
+\end{proof}
+\textit{Toy Example.} Suppose $n = 6$ and $A = \{1, 2, 3, 4, 5, 6\}$.
+Let $\threshnew$ be the threshold; for example, let $k = \threshnew = 5$.
+Let $B_1 \subseteq A, B_2 \subseteq A$ be independent, randomly chosen subsets such that $\lvert B_1 \rvert = \lvert B_2 \rvert = f = 3$.
+(In our metareduction, $B_1 = \corrupt_1, B_2 = \corrupt_2$, and $f$ is the corruption threshold.
+Our first result is currently $f = \tcornew = 4$.)
+There are $\binom{n}{\threshnew} = \binom{6}{5} = 6$ ways to pick the set $U := B_1 \cup B_2$ of size $\threshnew$:
+$$U = \{1, 2, 3, 4, 5\}, \{1, 2, 3, 4, 6\}, \{1, 2, 3, 5, 6\}, \{1, 2, 4, 5, 6\}, \{1, 3, 4, 5, 6\}, \{2, 3, 4, 5, 6\}$$
+Say $U = \{1, 2, 4, 5, 6\}$.
+There are $\binom{\threshnew}{f} = \binom{5}{3} = 10$ ways to pick the set $B_1$, which is a subset of $U$.
+Say $B_1 = \{1, 2, 5\}$.
+Then, we must pick elements of $\{1, 2, 4, 5, 6\}$ such that $B_2$ has $3$ elements and $B_1 \cup B_2 = U$.
+There are $\binom{f}{2f-(\threshnew)} = \binom{3}{6-5} = 3$ ways to pick $B_2$:
+$$B_2 = \{1, 4, 6\}, \{2, 4, 6\}, \{5, 4, 6\}$$
+
+$\Pr[\threshnew]$ is the probability that $B_1 \cup B_2$ has exactly $\threshnew$ elements.
+%
+\begin{align}
+\Pr[\threshnew] = \frac{\#~\text{of ways of choosing $B_1, B_2$ s.t. $U$ has size $\threshnew$}}{\#~\text{of ways of choosing $B_1, B_2$}}
+\end{align}
+
+There are $\binom{n}{f} = \binom{6}{3} = 20$ ways to choose uniformly random $B_1, B_2$ of size $f$.
+Thus, we have:
+%
+\begin{equation}
+\Pr[5] =
+      \frac{\binom{6}{5} \binom{5}{3} \binom{3}{6 - 5}}{\binom{6}{3}^2} = \frac{9}{20}
+  \end{equation}
+(Note that $3 \leq 5 \leq \min\{6, 6\}$.)  Thus, the chance that two randomly chosen sets of size 3 have a union of exactly size 5 is 45\%.
+
+Now, for the purposes of our metareduction, $\lvert B_1 \cup B_2 \rvert = \threshnew = 5$ certainly suffices, but the metareduction also succeeds as long as $\lvert B_1 \cup B_2 \rvert \geq \threshnew$.
+Thus, in our example, $\lvert B_1 \cup B_2 \rvert = 6$ also suffices. (Since $n = 6$, this is the only other case that works for our metareduction.)
+
+\begin{equation}
+\Pr[6] =
+      \frac{\binom{6}{6} \binom{6}{3} \binom{3}{0}}{\binom{6}{3}^2} = \frac{1}{20}
+  \end{equation}
+(Note that $3 \leq 6 \leq \min\{6, 6\}$.)  Thus, the chance that two randomly chosen sets of size 3 have a union of exactly size 6 is 5\%.
+
+  \medskip
+  %Let us now sum over all possible thresholds $k = \threshnew$ (instead of just considering $\threshnew = 5$). In our example, $3 \leq \threshnew \leq \min\{6, 6\} = 6$.
+
+  Let us do a few more sanity checks.  First, let us check that our probability function sums to 1.
+
+\medskip
+\underline{Check Cases $3 \leq \threshnew \leq 6$:}
+
+\begin{enumerate}
+
+\item For $n = 6, \threshnew = 3, f = 3$, $2f - (t+1) = 3$, so $\binom{f}{2f - (\threshnew)} = \binom{3}{3}$.
+The probability that two randomly chosen sets of size 3 have a union of exactly size 3 is $\frac{1}{20}$.
+Note that this corresponds to $B_1$ and $B_2$ being equal.
+
+\item For $n = 6, \threshnew = 4, f = 3$, $2f - (\threshnew) = 2$, so $\binom{f}{2f - (\threshnew)} = \binom{3}{2}$.
+The probability that two randomly chosen sets of size 3 have a union of exactly size 4 is $\frac{9}{20}$.
+
+\item We have calculated $n = 6, \threshnew = 5, f = 3$ above. The probability is $9/20$.
+
+\item We have calculated $n = 6, \threshnew = 6, f = 3$ above. The probability is 1/20.
+
+\end{enumerate}
+
+These indeed sum to 1.
+
+As a final sanity check, the equation for $\Pr[k]$ should reduce to our first result when $k = t$.
+%
+%We have covered the case where $f = t$.
+%
+%\begin{equation}
+%\Pr[\threshnew] =
+%      \frac{\binom{n}{\threshnew} \binom{\threshnew}{t} \binom{t}{2t - (\threshnew)}}{\binom{n}{t}^2} = \frac{9}{20}
+%  \end{equation}
+%
+%This is the good event where $B_1 \cup B_2 = \threshnew$.
+The bad event, where $\lvert B_1 \rvert = \lvert B_2 \rvert = t$ and $B_1 \cup B_2 = t$ (it cannot be less than this) occurs with probability:
+
+\begin{equation}
+\Pr[t] =
+      \frac{\binom{n}{t} \binom{t}{t} \binom{t}{2t - t}}{\binom{n}{t}^2} = \frac{1}{\binom{n}{t}}
+  \end{equation}
+
+This is indeed the result of \cref{thm:metareduction-dltwo}.
+
+For our metareduction specifically, we cannot allow the first case because this implies that the corruption threshold $f$ can be equal to the threshold $\threshnew$. We need at least one honest signer in the signing set.
+So, 
+
+\begin{proof}[of \cref{corr:metareduction-dltwo}]
+In the proof of  \cref{thm:metareduction-dltwo}, the metareduction succeeds as long as the two randomly chosen sets $\corrupt_1, \corrupt_2$ of size $f$  are such that $\lvert \corrupt_1 \cup \corrupt_2 \rvert \geq \threshnew$.
+By \cref{lemma:sets}, with $\corrupt_1 = B_1$ and $\corrupt_2 = B_2$, the probability that the metareduction succeeds as a function of the total number of parties $n$, the threshold $k$, and the corruption threshold $f$ is:
+
+$$\sum_{k = f +1}^n \Pr[k] = \sum_{k = f +1}^n \frac{\binom{n}{k} \binom{k}{f} \binom{f}{2f - k}}{\binom{n}{f}^2}$$
+
+Thus, $$\Pr[\BadEvent] = 1 - \sum_{k = f +1}^n \frac{\binom{n}{k} \binom{k}{f} \binom{f}{2f - k}}{\binom{n}{f}^2}$$
+in \cref{corr:metareduction-dltwo}.
+
+\end{proof}

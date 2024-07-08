@@ -51,25 +51,26 @@ Anonymity is a key property of ring VRFs, ensuring that the verifier learns noth
 Consider the following intuitive ring VRF scheme.
 Let \rVRF.\Eval be a pseudorandom function, and use a NIZK protocol $ \NIZK $, where $ \rVRF.\Sign $ runs the proving algorithm and $ \rVRF.\Verify $ runs the verification algorithm of $ \NIZK $ for a relation consisting of statement and witness pairs, as follows:
 %\vspace{-2mm}
-\doublecolumn{
-	\begin{scriptsize}
-		$$ \rel_{\mathsf{rvrf}} = \Setst{ (\Out, \msg, \ring);(\sk,\pk)}{
-		\begin{aligned}
-			& (\pk,\sk) \leftarrow \rVRF.\KeyGen,\\
-			& \pk \in \ring \\
-			& \Out = \rVRF.\Eval(\sk,\msg) 
-		\end{aligned}
-		} $$
-	\end{scriptsize}
-}{
-	$$ \rel_{\mathsf{rvrf}} = \Setst{ (\Out, \msg, \ring);(\sk,\pk)}{
-	\begin{aligned}
-		& (\sk,\pk) \leftarrow \rVRF.\KeyGen,\\
-		& \pk \in \ring \\
-		& \Out = \rVRF.\Eval(\sk,\msg)
-	\end{aligned}
-} $$
-}
+% Liz: bring this back, formatting issue
+%\doublecolumn{
+%	\begin{scriptsize}
+%		$$ \rel_{\mathsf{rvrf}} = \Setst{ (\Out, \msg, \ring);(\sk,\pk)}{
+%		\begin{aligned}
+%			& (\pk,\sk) \leftarrow \rVRF.\KeyGen,\\
+%			& \pk \in \ring \\
+%			& \Out = \rVRF.\Eval(\sk,\msg) 
+%		\end{aligned}
+%		} $$
+%	\end{scriptsize}
+%}{
+%	$$ \rel_{\mathsf{rvrf}} = \Setst{ (\Out, \msg, \ring);(\sk,\pk)}{
+%	\begin{aligned}
+%		& (\sk,\pk) \leftarrow \rVRF.\KeyGen,\\
+%		& \pk \in \ring \\
+%		& \Out = \rVRF.\Eval(\sk,\msg)
+%	\end{aligned}
+%} $$
+%}
 
 
 
