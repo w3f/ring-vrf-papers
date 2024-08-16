@@ -96,7 +96,8 @@ for the specific signer, but only within the context of \msg. \liz{We may want t
 If one were to use the ring VRF interface described above, then one would need time
 $O(|\ring|)$ in \rVRF.\rSign and \rVRF.\rVerify merely to read their \ring
 argument, which severely limits applications.
-Instead, we replace $ \ring $ with a commitment to the ring, such as Merkle tree root, and run asymptotically faster. Therefore, we introduce the following algorithms for $ \rVRF $:
+Instead, advanced ring signatures replace $ \ring $ with a commitment to the ring, such as a Merkle tree root, so the prover can run asymptotically faster.
+This adds two algorithms: 
 \begin{itemize}
 % \item $\rVRF.\CheckRing : \ring \mapsto \comring$ takes a set \ring of public keys and returns a public key set commitment \comring.
 \item $\rVRF.\CommitRing : (\ring,\pk) \mapsto (\comring,\openring)$ \,
@@ -107,9 +108,10 @@ Instead, we replace $ \ring $ with a commitment to the ring, such as Merkle tree
     the ring commitment \comring, or failure $\perp$ otherwise.
 \end{itemize}
 
-Together with these algorithms, we can replace the membership condition $\pk \in \ring$ in $  \rel_{\mathsf{rvrf}} $ by the opening condition
-$ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the statement with $ \comring $ and add $ \openring $ to the witness.
-\liz{Committing to the ring using a Merkle tree is not new, so I don't think we need to go into this depth. We want to highlight the efficiency of reproving instead.}
+% Together with these algorithms, we can replace the membership condition $\pk \in \ring$ in $  \rel_{\mathsf{rvrf}} $ by the opening condition
+% $ \pk = \rVRF.\OpenRing(\comring,\openring) $ and replace $ \ring $ in the statement with $ \comring $ and add $ \openring $ to the witness.
+% \liz{Committing to the ring using a Merkle tree is not new, so I don't think we need to go into this depth. We want to highlight the efficiency of reproving instead.}
+
 %
 %\eprint{Indeed, regular (non-anonymous) VRF uses always encounter similar tension
 %	with VRF inputs \msg being smaller than full message bodies $(\msg,\aux)$.
