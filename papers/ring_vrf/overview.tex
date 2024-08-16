@@ -81,7 +81,7 @@ Let \rVRF.\Eval be a pseudorandom function, and use a NIZK protocol $ \NIZK $, w
 The zero-knowledge property of the NIZK ensures that the verifier learns nothing about the specific
 signer, except that their public key is in the ring and maps $\msg$ to $\Out$.
 Importantly, pseudorandomness also guarantees that \Out is an anonymous identity
-for the specific signer, but only within the context of \msg. \liz{We may want to use this language of context elsewhere.} We ignore $ \aux $ in $ \rel_{\mathsf{rvrf}} $ for the sake of simplicity. Otherwise, we note that  \rVRF.\Sign and \rVRF.\Verify must be included if signing associated data \aux. \liz{?}
+for the specific signer, but only within the context of \msg. \liz{We may want to use this language of context elsewhere.  Jeff: Sure.  It's more intuitive in some ways. } We ignore $ \aux $ in $ \rel_{\mathsf{rvrf}} $ for the sake of simplicity. 
 
 
 %In addition to the primary task of proving an evaluation value anonymously, it is imperative to incorporate \rVRF.\Sign and \rVRF.\Verify to sign associated data \aux. Neglecting this  would leave ring VRF signatures vulnerable, rendering them susceptible to replay attacks, particularly in identity applications. \eprint{As an example, our identity protocol below in \S\eprint{\ref{sec:app_identity}}
