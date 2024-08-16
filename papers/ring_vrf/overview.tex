@@ -153,7 +153,8 @@ This adds two algorithms:
 %\item $\rVRF.\rSign : (\sk,\openring,\msg,\aux) \mapsto \sigma$, \quad and
 %\item $\rVRF.\rVerify : (\comring,\msg,\aux,\sigma) \mapsto \Out \,\, \lor \perp$.
 %\end{itemize}}{}
-\\\\
+
+% \\ \\
 \noindent \textbf{Our Approach.} Although an asymptotic improvement with $ \rVRF.\CommitRing $, 
 the intuitive scheme can be computationally expensive to prove the evaluation value in combination with the ring membership condition. Therefore, in our first ring VRF construction, which can be viewed as ECVRF with discrete log public keys replaced with Pedersen commitments to secret keys, we divide the relation into two relations. The first relation $ \Reval $ is designed  to show the validity of the evaluation value with a proof that can be efficiently generated using discrete logarithm equality proofs.  We integrate $ \aux $ in this proof so that the proof serves as a signature on $ \aux $ signed by the same key used to generate the ring VRF output.  \liz{It is not clear why we are signing $\aux$.} The second relation $ \Rring $ is designed to show that the key used in the evaluation and in signing $ \aux $ is in the ring. Its statement therefore has one part of the evaluation proof which is the Pedersen commitment to the secret key in order to relate the key in $ \Rring $ and $ \Reval $.
 
