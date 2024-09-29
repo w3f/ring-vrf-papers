@@ -16,7 +16,7 @@
 A verifiable random function (VRF) \cite{vrf_micali} is a pseudorandom function (PRF) whose output is publicly verifiable.
 That is, only the user holding the secret key can perform evaluations, but any anyone can
 verify an output, given the public verification key and a proof of correctness.
-VRFs have received widespread adoption in practice, including in e-lotteries \cite{MicaliR02,LiangBM20} and secure DNS \cite{GoldbergNPRVZ15,PapadopoulosWHNVRG17}, and have attracted significant interest in recent years due to their use in proof-of-stake (PoS) blockchains for secret leader election \cite{ChenM19,KiayiasRDO17,DavidGKR17,BurdgesASV23a}.
+VRFs have received widespread adoption in practice, including in e-lotteries \cite{MicaliR02,LiangBM20} and secure DNS \cite{GoldbergNPRVZ15,PapadopoulosWHNVRG17}, and have attracted significant interest in recent years due to their use in proof-of-stake (PoS) blockchains for secret leader election \cite{KiayiasRDO17,DavidGKR17,BurdgesASV23a}.  % Why was ChenM19 cited for SSLE?
 In particular, the RSA Full Domain Hash VRF (RSA-FDH-VRF) and the Elliptic Curve VRF (ECVRF) are the subject of standardization efforts through the IETF, including a recent RFC \cite{VRF-RFC}.
 
 \smallskip
@@ -43,8 +43,8 @@ block.
 An SSLE scheme is said to be secure \cite{BonehEHG20} if it satisfies uniqueness (i.e., electing only one leader), unpredictability (i.e., hiding the leader), and fairness (i.e., having equal chance of becoming the leader).
 \liz{Possibly say more on this, i.e., not leaking wealth.}
 
-ECVRF is a core primitive in the leader election mechanisms of PoS blockchains, such as Algorand \cite{ChenM19} and Cardano \cite{KiayiasRDO17,DavidGKR17}, which employ PLE, and Polkadot \cite{BurdgesASV23a}, which employs SSLE.
-RSA-FDH-VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
+ECVRF is a core primitive in the leader election mechanisms of PoS blockchains, in particular the Praos-like protocols \cite{KiayiasRDO17,DavidGKR17} used by Cardano, initially Polkadot, and others.  % Jeff:  Not sure how to fit this here  \cite{BurdgesASV23a}, which employs SSLE.
+Also, the RSA-FDH VRF does not provide unpredictability if the VRF key is maliciously chosen \cite{VRF-RFC}. This is a critical security property for VRFs being used for leader election, since any bias in outputs could change the lottery outcome.  Thus, ECVRF is the prevailing choice of VRF in blockchains.
 %
 %For instance, blockchain protocols often select leaders to produce a block  based on the VRF output of a party, with parties having a VRF output below a certain threshold being chosen as leaders \cite{praos,genesis}. 
 %
